@@ -29,6 +29,23 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
   onPaymentSuccess,
 }) => {
   const [catalog,setCatalog]=useState<any>(null);
+  const [brazilPrices, setBrazilPrices] = useState<Record<string, number | null> | null>(null);
+  const [brazilMessage, setBrazilMessage] = useState('');
+  useEffect(() => {
+    if (!isOpen || !currentUser?.isAdmin) return;
+    fetch('/api/commercial/brazil-prices').then(r => { if (!r.ok) throw new Error('No se pudo cargar'); return r.json(); }).then(d => setBrazilPrices(d.prices)).catch(() => setBrazilMessage('No se pudo cargar la tabla de Brasil.'));
+  }, [isOpen, currentUser?.isAdmin]);
+  const saveBrazil = async () => {
+    if (!brazilPrices) return;
+    setBrazilMessage('Guardando...');
+    try {
+      const response = await fetch('/api/commercial/brazil-prices', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ prices: brazilPrices }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'No se pudo guardar');
+      setBrazilPrices(data.prices);
+      setBrazilMessage('Precios de Brasil guardados en USD.');
+    } catch (error) { setBrazilMessage(error instanceof Error ? error.message : 'Error al guardar'); }
+  };
   const [priceError,setPriceError]=useState('');
   const [showContactForm, setShowContactForm] = useState(false);
   useEffect(()=>{if(!isOpen)return;setPriceError('');fetch('/api/commercial/prices').then(async r=>{if(!r.ok)throw new Error();const d=await r.json();setCatalog(d.prices)}).catch(()=>{setCatalog(null);setPriceError('No se pudieron cargar los precios. Reabrí esta ventana para reintentar.')})},[isOpen]);
@@ -192,6 +209,7 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
           </div>
         </div>
 
+        {currentUser?.isAdmin && <section className="rounded-xl border border-indigo-500/50 p-4 space-y-3" aria-label="Tabla de precios Brasil"><h3 className="font-bold text-lg">Administración · Precios Brasil (USD)</h3><p className="text-sm text-slate-300">Tabla independiente. Los clientes brasileños pagan en dólares estadounidenses (USD), no en reales. Dejá un campo vacío para mostrar «Precio sob consulta».</p>{brazilPrices && <div className="grid gap-3">{[['plan-dt','Plan DT'],['plan-club-pro','Club Pro'],['plan-federacion','Federación']].map(([id,name])=><label key={id} className="flex items-center justify-between gap-3"><span>{name}</span><input type="number" min="0.01" max="1000000" step="0.01" placeholder="Sin publicar" className="w-32 bg-slate-950 border border-slate-600 rounded p-2 text-white" value={brazilPrices[id] ?? ''} onChange={e => setBrazilPrices(prev => prev ? {...prev,[id]: e.target.value === '' ? null : Number(e.target.value)} : prev)} /></label>)}</div>}<button type="button" onClick={saveBrazil} disabled={!brazilPrices} className="rounded-lg bg-indigo-500 text-white px-4 py-2">Guardar precios Brasil</button><p role="status">{brazilMessage}</p></section>}
         {currentUser && <RecurringSubscriptionPanel onAccessUpdated={onPaymentSuccess} />}
         {mpConfig?.subscriptionsEnabled && currency === 'ARS' && <section className="rounded-xl border border-sky-500/40 p-4 space-y-3 text-sm">
           <label className="flex gap-3 items-start"><input type="checkbox" checked={recurring} onChange={e => { setRecurring(e.target.checked); setConsent(false); }} />
