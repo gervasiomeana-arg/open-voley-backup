@@ -7,6 +7,28 @@ export const DEFAULT_PRICES = {
     'plan-club-pro': { name: 'Plan Club Pro & Liga', monthly: { ARS: 35000, USD: 35 }, annual: { ARS: 320000, USD: 315 } },
     'plan-federacion': { name: 'Plan Federación / Torneo', monthly: { ARS: 95000, USD: 99 }, annual: { ARS: 850000, USD: 890 } },
 };
+
+// Brazil-specific USD prices are independent of the existing Argentina/international catalog.
+// Null means the administrator has not published a price yet.
+export type BrazilPrices = Record<'plan-dt' | 'plan-club-pro' | 'plan-federacion', number | null>;
+const BRAZIL_DEFAULT: BrazilPrices = { 'plan-dt': null, 'plan-club-pro': null, 'plan-federacion': null };
+export async function getBrazilPrices(): Promise<BrazilPrices> {
+  if (durableStorageEnabled()) {
+    const row = (await readCloud('commercial', 'settings', 'brazil-prices'))[0];
+    return { ...BRAZIL_DEFAULT, ...(row?.value || {}) };
+  }
+  const row = db().prepare('SELECT payload FROM commercial_settings WHERE id=?').get('brazil-prices') as any;
+  return { ...BRAZIL_DEFAULT, ...(row ? JSON.parse(row.payload) : {}) };
+}
+export async function saveBrazilPrices(value: BrazilPrices, admin: string) {
+  if (durableStorageEnabled()) {
+    await updateCloud('commercial', 'settings', 'brazil-prices', () => value);
+  } else {
+    db().prepare('INSERT INTO commercial_settings VALUES (?,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload').run('brazil-prices', JSON.stringify(value));
+  }
+  await recordPaymentEvent(`brazil-prices-${randomUUID()}`, { type: 'brazil-price-change', admin, currency: 'USD' });
+}
+
 let database: DatabaseSync;
 function db() {
     if (!database) {
