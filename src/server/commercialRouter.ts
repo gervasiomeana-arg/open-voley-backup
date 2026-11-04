@@ -9,10 +9,11 @@ import { reconcilePayment } from './paymentProcessing';
 import { Router } from 'express';
 import { getSessionFromRequest } from './sessionSecurity';
 import { loadAccounts, isAdminEmail } from './accountStore';
-import { DEFAULT_PRICES, getPrices, savePrices, recordLead, listLeads, deleteLead, recordVisit, listVisits, listReconciliation, listPaymentAudit, getLaunchReview, saveLaunchReview } from './commercialStore';
+import { DEFAULT_PRICES, getPrices, savePrices, getBrazilPrices, saveBrazilPrices, recordLead, listLeads, deleteLead, recordVisit, listVisits, listReconciliation, listPaymentAudit, getLaunchReview, saveLaunchReview } from './commercialStore';
 export const commercialRouter = Router();
 const clean = (v: unknown, max = 150) => typeof v === 'string' ? v.trim().slice(0, max) : '';
 commercialRouter.get('/api/commercial/prices', asyncHandler(async (_req, res) => res.json({ prices: await getPrices() })));
+commercialRouter.get('/api/commercial/brazil-prices', asyncHandler(async (_req, res) => res.json({ currency: 'USD', prices: await getBrazilPrices() })));
 commercialRouter.post('/api/commercial/leads', asyncHandler(async (req, res) => {
     const email = clean(req.body?.email, 320).toLowerCase(), name = clean(req.body?.name);
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || req.body?.consent !== true)
@@ -72,6 +73,18 @@ commercialRouter.put('/api/commercial/prices', asyncHandler(async (req, res) => 
             }
     await savePrices(prices, res.locals.adminEmail);
     res.json({ success: true, prices });
+}));
+commercialRouter.put('/api/commercial/brazil-prices', asyncHandler(async (req, res) => {
+    const incoming = req.body?.prices;
+    const prices = await getBrazilPrices();
+    for (const id of Object.keys(prices) as Array<keyof typeof prices>) {
+        const value = incoming?.[id];
+        if (value !== null && (typeof value !== 'number' || !Number.isFinite(value) || value <= 0 || value > 1e6 || Math.round(value * 100) !== value * 100))
+            return res.status(400).json({ error: 'Cada plan debe tener un precio USD positivo de hasta dos decimales, o quedar sin publicar.' });
+        prices[id] = value;
+    }
+    await saveBrazilPrices(prices, res.locals.adminEmail);
+    res.json({ success: true, currency: 'USD', prices });
 }));
 commercialRouter.get('/api/commercial/payments', asyncHandler(async (_req, res) => {
     const records = await listReconciliation(), accounts = await loadAccounts(), byUser = new Map(accounts.map(a => [a.id, a])), seen = new Set(records.payments.map(p => p.paymentId));
