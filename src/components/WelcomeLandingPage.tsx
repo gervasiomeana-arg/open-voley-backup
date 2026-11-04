@@ -8,6 +8,76 @@ interface WelcomeLandingPageProps {
     onClientLogin: () => void;
     onOpenPlansModal: () => void;
 }
+const ptBR: Record<string, string> = {
+  "Ir al contenido": "Pular para o conteúdo",
+  "La plataforma": "A plataforma",
+  "Cómo funciona": "Como funciona",
+  "Planes y precios": "Planos e preços",
+  "Ingresar": "Entrar",
+  "Probar gratis": "Teste grátis",
+  "Leé el partido.": "Leia o jogo.",
+  "Decidí mejor.": "Decida melhor.",
+  "Scouting, análisis y entrenamiento de vóley, conectados.": "Scout, análise e treinamento de vôlei, integrados.",
+  "Probar OPEN VOLEY": "Testar OPEN VOLEY",
+  "Ver cómo funciona": "Veja como funciona",
+  "7 días gratis · Sin tarjeta": "7 dias grátis · Sem cartão",
+  "Tu trabajo técnico,": "Seu trabalho técnico,",
+  "conectado.": "integrado.",
+  "Partido ": "Jogo ",
+  "Análisis ": "Análise ",
+  "Vídeo ": "Vídeo ",
+  "Entrenamiento": "Treinamento",
+  "No termina": "Não termina",
+  "cuando termina el set.": "quando o set termina.",
+  "La información que registrás durante el partido se convierte en material para analizar, explicar y entrenar.": "Os dados registrados durante o jogo ajudam a analisar, explicar e treinar.",
+  "De la cancha a la práctica": "Da quadra ao treino",
+  "Menos datos sueltos.": "Menos dados isolados.",
+  "Más decisiones.": "Mais decisões.",
+  "Empezá por un partido y construí el seguimiento de tu equipo, a tu ritmo.": "Comece por um jogo e acompanhe a evolução da sua equipe no seu ritmo.",
+  "Armá el partido": "Prepare o jogo",
+  "Elegí los equipos, cargá las jugadoras o jugadores y definí la formación inicial.": "Escolha as equipes, cadastre atletas e defina a formação inicial.",
+  "Registrá y revisá": "Registre e revise",
+  "Usá el scout simple o la consola. Consultá la planilla y volvé a las acciones del partido.": "Use o scout simples ou o console. Consulte as estatísticas e reveja as ações do jogo.",
+  "Llevalo al entrenamiento": "Leve para o treino",
+  "Reuní evidencia en vídeo, organizá ejercicios y seguí el historial de trabajo.": "Reúna vídeos, organize exercícios e acompanhe o histórico de treinos.",
+  "Consultá sobre los datos de tu equipo para orientar el análisis. Las conclusiones y decisiones quedan en manos del entrenador.": "Consulte os dados da equipe para orientar a análise. As decisões continuam nas mãos do treinador.",
+  "En el banco.": "No banco.",
+  "En la oficina.": "No escritório.",
+  "Con tu equipo.": "Com sua equipe.",
+  "Usá OPEN VOLEY desde el navegador, en computadora, tablet o celular.": "Use OPEN VOLEY no navegador, no computador, tablet ou celular.",
+  "Consultar planes y precios": "Consultar planos e preços",
+  "Primero conocé la plataforma.": "Primeiro conheça a plataforma.",
+  "Después elegí cómo seguir.": "Depois escolha como continuar.",
+  "Probá el recorrido con tu cuenta de Google o solicitá una demo para consultar cómo usarlo con tu club.": "Experimente com sua conta Google ou solicite uma demonstração para seu clube.",
+  "7 días para explorar · Sin tarjeta para comenzar": "7 dias para explorar · Sem cartão para começar",
+  "Hablemos de tu equipo": "Vamos falar da sua equipe",
+  "Tu próximo partido": "Seu próximo jogo",
+  "puede decirte más.": "pode revelar mais.",
+  "Dejanos tus datos para coordinar una demo o consultar por OPEN VOLEY.": "Deixe seus dados para agendar uma demonstração ou saber mais sobre OPEN VOLEY.",
+  "El juego cambia.": "O jogo muda.",
+  "Tu mirada también.": "Seu olhar também.",
+  "Preguntas": "Perguntas",
+  "desde el banco.": "do banco.",
+  "Scouting, análisis y entrenamiento de vóley.": "Scout, análise e treinamento de vôlei.",
+  "Consultar por la plataforma": "Fale sobre a plataforma",
+  "El partido, punto por punto.": "O jogo, ponto a ponto.",
+  "Registrá acciones, seguí las rotaciones de ambos equipos y seleccioná a los líberos cuando participan.": "Registre ações, acompanhe as rotações das duas equipes e selecione os líberos quando participarem.",
+  "Encontrá qué trabajar.": "Descubra o que treinar.",
+  "Revisá puntos, errores y rendimiento por jugador y fundamento. Volvé del resultado a las acciones que lo explican.": "Analise pontos, erros e desempenho por atleta e fundamento. Volte dos resultados às ações do jogo.",
+  "Mostrá la jugada exacta.": "Mostre a jogada exata.",
+  "Vinculá el vídeo del partido y prepará selecciones de acciones para revisar con el equipo.": "Vincule o vídeo do jogo e selecione jogadas para revisar com a equipe.",
+  "Del dato a la próxima práctica.": "Dos dados ao próximo treino.",
+  "Organizá el trabajo técnico con evidencia del partido y guardá el historial para seguir la evolución.": "Organize o trabalho técnico com evidências do jogo e acompanhe a evolução.",
+  "¿Cómo empiezo?": "Como começar?",
+  "Ingresá con tu cuenta de Google. Las cuentas nuevas tienen una prueba de 7 días, sin ingresar una tarjeta.": "Entre com sua conta Google. Novas contas têm 7 dias de teste, sem cartão.",
+  "¿Desde dónde puedo usarlo?": "Onde posso usar?",
+  "OPEN VOLEY funciona en el navegador. Podés registrar desde celular o tablet y continuar el análisis desde la computadora.": "OPEN VOLEY funciona no navegador. Registre pelo celular ou tablet e continue a análise no computador.",
+  "¿Necesito saber los códigos de scout?": "Preciso conhecer os códigos de scout?",
+  "Podés registrar con botones en el modo simple o usar la consola de códigos cuando necesitás más detalle.": "Você pode registrar com botões no modo simples ou usar códigos para mais detalhes.",
+  "¿Cómo consulto el precio?": "Como consultar os preços?",
+  "En Planes y precios podés ver los precios mensuales actuales en pesos y dólares. Si querés conocer el producto primero, completá la solicitud de demo.": "Em Planos e preços, consulte os valores disponíveis. Para conhecer o produto, solicite uma demonstração.",
+};
+const translate = (text: string, locale: 'es' | 'pt-BR') => locale === 'pt-BR' ? (ptBR[text] ?? text) : text;
 const steps = [
     { label: 'Scout', title: 'El partido, punto por punto.', text: 'Registrá acciones, seguí las rotaciones de ambos equipos y seleccioná a los líberos cuando participan.', icon: Volleyball },
     { label: 'Análisis', title: 'Encontrá qué trabajar.', text: 'Revisá puntos, errores y rendimiento por jugador y fundamento. Volvé del resultado a las acciones que lo explican.', icon: BarChart3 },
@@ -47,25 +117,32 @@ export const WelcomeLandingPage: React.FC<WelcomeLandingPageProps> = ({ onStartF
       sections.forEach(el => { el.classList.add('ov-reveal-ready'); observer.observe(el); });
       return () => { observer.disconnect(); sections.forEach(el => el.classList.remove('ov-reveal-ready')); };
     }, []);
+    const [locale, setLocale] = useState<'es' | 'pt-BR'>(() => {
+      if (typeof window === 'undefined') return 'es';
+      const query = new URLSearchParams(window.location.search).get('lang');
+      return query === 'pt-BR' || query === 'pt' ? 'pt-BR' : (window.localStorage.getItem('openvoley_public_locale') === 'pt-BR' ? 'pt-BR' : 'es');
+    });
+    const t = (text: string) => translate(text, locale);
+    useEffect(() => { window.localStorage.setItem('openvoley_public_locale', locale); document.documentElement.lang = locale; }, [locale]);
     const [step, setStep] = useState(0), [openQuestion, setOpenQuestion] = useState<number | null>(0);
     useEffect(() => { void fetch('/api/visitors/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ domain: window.location.hostname, page: window.location.pathname, deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Móvil' : 'PC / Laptop', action: 'Visita Landing Oficial' }) }).catch(() => { }); }, []);
     return <div ref={landingRef} className="ov-landing">
-  <a href="#contenido" className="ov-skip">Ir al contenido</a>
-  <header className="ov-header"><div className="ov-container ov-nav"><a className="ov-brand" href="#inicio" aria-label="OPEN VOLEY, inicio"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><nav aria-label="Navegación principal"><a href="#herramientas">La plataforma</a><a href="#como-funciona">Cómo funciona</a><button onClick={onOpenPlansModal}>Planes y precios</button></nav><div className="ov-nav-actions"><button className="ov-mobile-plans" onClick={onOpenPlansModal}>Planes</button><button className="ov-login" onClick={onClientLogin}>Ingresar <ArrowUpRight size={16}/></button><button className="ov-nav-trial" onClick={onStartFreeTrial}>Probar gratis</button></div></div></header>
+  <a href="#contenido" className="ov-skip">{t("Ir al contenido")}</a>
+  <header className="ov-header"><div className="ov-container ov-nav"><a className="ov-brand" href="#inicio" aria-label="OPEN VOLEY, inicio"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><nav aria-label="Navegación principal"><a href="#herramientas">{t("La plataforma")}</a><a href="#como-funciona">{t("Cómo funciona")}</a><button onClick={onOpenPlansModal}>{t("Planes y precios")}</button></nav><div className="ov-nav-actions"><select aria-label="Idioma / Idioma" value={locale} onChange={e => setLocale(e.target.value as 'es' | 'pt-BR')} style={{maxWidth:110, borderRadius:8, padding:6, background:"transparent", color:"inherit"}}><option value="es">Español</option><option value="pt-BR">Português BR</option></select><button className="ov-mobile-plans" onClick={onOpenPlansModal}>Planes</button><button className="ov-login" onClick={onClientLogin}>{t("Ingresar")} <ArrowUpRight size={16}/></button><button className="ov-nav-trial" onClick={onStartFreeTrial}>{t("Probar gratis")}</button></div></div></header>
   <main id="contenido">
-   <div className="ov-hero-wrap"><img className="ov-hero-backdrop" src="/media/volley-hero.webp" width="1600" height="900" alt="" aria-hidden="true" fetchPriority="high"/><section id="inicio" className="ov-hero ov-container"><div className="ov-hero-copy"><h1>Leé el partido.<br /><span>Decidí mejor.</span></h1><p className="ov-hero-description">Scouting, análisis y entrenamiento de vóley, conectados.</p><div className="ov-hero-actions"><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>Probar OPEN VOLEY <ArrowUpRight size={19}/></button><a className="ov-text-link" href="#como-funciona">Ver cómo funciona <ArrowRight size={17}/></a></div><p className="ov-trial-note">7 días gratis · Sin tarjeta</p></div><div className="ov-hero-visual"><div className="ov-laptop"><LandingScoutIllustration /></div></div></section></div>
-   <div className="ov-platform-strip"><div className="ov-container"><span>Tu trabajo técnico,<br /><strong>conectado.</strong></span><p>Partido <ArrowRight /> Scout <ArrowRight /> Análisis <ArrowRight /> Vídeo <ArrowRight /> Entrenamiento</p></div></div>
-   <section id="herramientas" className="ov-section ov-container"><div className="ov-section-heading"><div><h2>No termina<br />cuando termina el set.</h2></div><p>La información que registrás durante el partido se convierte en material para analizar, explicar y entrenar.</p></div><div className="ov-tool-layout"><div className="ov-tool-list" role="tablist" aria-label="Herramientas de la plataforma">{steps.map((item, i) => { const Icon = item.icon; return <button id={`ov-tab-${i}`} key={item.label} role="tab" aria-selected={step === i} aria-controls="ov-tool-panel" tabIndex={step === i ? 0 : -1} onKeyDown={e => { if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
+   <div className="ov-hero-wrap"><img className="ov-hero-backdrop" src="/media/volley-hero.webp" width="1600" height="900" alt="" aria-hidden="true" fetchPriority="high"/><section id="inicio" className="ov-hero ov-container"><div className="ov-hero-copy"><h1>{t("Leé el partido.")}<br /><span>{t("Decidí mejor.")}</span></h1><p className="ov-hero-description">{t("Scouting, análisis y entrenamiento de vóley, conectados.")}</p><div className="ov-hero-actions"><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>{t("Probar OPEN VOLEY")} <ArrowUpRight size={19}/></button><a className="ov-text-link" href="#como-funciona">{t("Ver cómo funciona")} <ArrowRight size={17}/></a></div><p className="ov-trial-note">{t("7 días gratis · Sin tarjeta")}</p></div><div className="ov-hero-visual"><div className="ov-laptop"><LandingScoutIllustration /></div></div></section></div>
+   <div className="ov-platform-strip"><div className="ov-container"><span>{t("Tu trabajo técnico,")}<br /><strong>{t("conectado.")}</strong></span><p>Partido <ArrowRight /> Scout <ArrowRight /> Análisis <ArrowRight /> Vídeo <ArrowRight /> {t("Entrenamiento")}</p></div></div>
+   <section id="herramientas" className="ov-section ov-container"><div className="ov-section-heading"><div><h2>{t("No termina")}<br />{t("cuando termina el set.")}</h2></div><p>{t("La información que registrás durante el partido se convierte en material para analizar, explicar y entrenar.")}</p></div><div className="ov-tool-layout"><div className="ov-tool-list" role="tablist" aria-label="Herramientas de la plataforma">{steps.map((item, i) => { const Icon = item.icon; return <button id={`ov-tab-${i}`} key={item.label} role="tab" aria-selected={step === i} aria-controls="ov-tool-panel" tabIndex={step === i ? 0 : -1} onKeyDown={e => { if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
         e.preventDefault();
         const next = e.key === 'Home' ? 0 : e.key === 'End' ? 3 : (step + (['ArrowUp', 'ArrowLeft'].includes(e.key) ? 3 : 1)) % 4;
         setStep(next);
         document.getElementById(`ov-tab-${next}`)?.focus();
-    } }} onClick={() => setStep(i)} className={step === i ? 'is-active' : ''}><span className="ov-tool-number">0{i + 1}</span><div><span className="ov-tool-label"><Icon size={18}/>{item.label}</span><h3>{item.title}</h3><p>{item.text}</p></div><ArrowUpRight size={21}/></button>; })}</div><div id="ov-tool-panel" role="tabpanel" aria-labelledby={`ov-tab-${step}`} tabIndex={0} className="ov-tool-preview"><ProductIllustration step={step}/></div></div></section>
-   <section id="como-funciona" className="ov-method"><div className="ov-container ov-section"><div className="ov-section-heading"><div><p className="ov-eyebrow">De la cancha a la práctica</p><h2>Menos datos sueltos.<br />Más decisiones.</h2></div><p>Empezá por un partido y construí el seguimiento de tu equipo, a tu ritmo.</p></div><ol className="ov-method-steps"><li><span>01</span><h3>Armá el partido</h3><p>Elegí los equipos, cargá las jugadoras o jugadores y definí la formación inicial.</p></li><li><span>02</span><h3>Registrá y revisá</h3><p>Usá el scout simple o la consola. Consultá la planilla y volvé a las acciones del partido.</p></li><li><span>03</span><h3>Llevalo al entrenamiento</h3><p>Reuní evidencia en vídeo, organizá ejercicios y seguí el historial de trabajo.</p></li></ol><div className="ov-ai-note"><span>OPEN AI</span><p>Consultá sobre los datos de tu equipo para orientar el análisis. Las conclusiones y decisiones quedan en manos del entrenador.</p><ArrowUpRight size={22}/></div></div></section>
-   <section className="ov-section ov-container ov-access"><div><h2>En el banco.<br />En la oficina.<br /><span>Con tu equipo.</span></h2><p>Usá OPEN VOLEY desde el navegador, en computadora, tablet o celular.</p><button className="ov-text-link" onClick={onOpenPlansModal}>Consultar planes y precios <ArrowUpRight size={19}/></button></div><div className="ov-access-right"><h3>Primero conocé la plataforma.<br />Después elegí cómo seguir.</h3><p>Probá el recorrido con tu cuenta de Google o solicitá una demo para consultar cómo usarlo con tu club.</p><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>Probar OPEN VOLEY <ArrowUpRight size={19}/></button><span>7 días para explorar · Sin tarjeta para comenzar</span></div></section>
-   <section id="demo" className="ov-demo"><div className="ov-container ov-demo-grid"><div><p className="ov-eyebrow">Hablemos de tu equipo</p><h2>Tu próximo partido<br />puede decirte más.</h2><p>Dejanos tus datos para coordinar una demo o consultar por OPEN VOLEY.</p><div className="ov-demo-mark" aria-hidden="true"><Volleyball /><span>El juego cambia.<br />Tu mirada también.</span></div></div><LeadRegistrationForm variant="landing"/></div></section>
-   <section className="ov-section ov-container ov-faq"><div><h2>Preguntas<br />desde el banco.</h2></div><div>{questions.map(([title, answer], i) => <article key={title}><h3><button aria-expanded={openQuestion === i} aria-controls={`ov-answer-${i}`} onClick={() => setOpenQuestion(openQuestion === i ? null : i)}>{title}{openQuestion === i ? <Minus size={18}/> : <Plus size={18}/>}</button></h3><div id={`ov-answer-${i}`} hidden={openQuestion !== i}><p>{answer}</p></div></article>)}</div></section>
+    } }} onClick={() => setStep(i)} className={step === i ? 'is-active' : ''}><span className="ov-tool-number">0{i + 1}</span><div><span className="ov-tool-label"><Icon size={18}/>{t(item.label)}</span><h3>{t(item.title)}</h3><p>{t(item.text)}</p></div><ArrowUpRight size={21}/></button>; })}</div><div id="ov-tool-panel" role="tabpanel" aria-labelledby={`ov-tab-${step}`} tabIndex={0} className="ov-tool-preview"><ProductIllustration step={step}/></div></div></section>
+   <section id="como-funciona" className="ov-method"><div className="ov-container ov-section"><div className="ov-section-heading"><div><p className="ov-eyebrow">{t("De la cancha a la práctica")}</p><h2>{t("Menos datos sueltos.")}<br />{t("Más decisiones.")}</h2></div><p>{t("Empezá por un partido y construí el seguimiento de tu equipo, a tu ritmo.")}</p></div><ol className="ov-method-steps"><li><span>01</span><h3>{t("Armá el partido")}</h3><p>{t("Elegí los equipos, cargá las jugadoras o jugadores y definí la formación inicial.")}</p></li><li><span>02</span><h3>{t("Registrá y revisá")}</h3><p>{t("Usá el scout simple o la consola. Consultá la planilla y volvé a las acciones del partido.")}</p></li><li><span>03</span><h3>{t("Llevalo al entrenamiento")}</h3><p>{t("Reuní evidencia en vídeo, organizá ejercicios y seguí el historial de trabajo.")}</p></li></ol><div className="ov-ai-note"><span>OPEN AI</span><p>{t("Consultá sobre los datos de tu equipo para orientar el análisis. Las conclusiones y decisiones quedan en manos del entrenador.")}</p><ArrowUpRight size={22}/></div></div></section>
+   <section className="ov-section ov-container ov-access"><div><h2>{t("En el banco.")}<br />{t("En la oficina.")}<br /><span>{t("Con tu equipo.")}</span></h2><p>{t("Usá OPEN VOLEY desde el navegador, en computadora, tablet o celular.")}</p><button className="ov-text-link" onClick={onOpenPlansModal}>{t("Consultar planes y precios")} <ArrowUpRight size={19}/></button></div><div className="ov-access-right"><h3>{t("Primero conocé la plataforma.")}<br />{t("Después elegí cómo seguir.")}</h3><p>{t("Probá el recorrido con tu cuenta de Google o solicitá una demo para consultar cómo usarlo con tu club.")}</p><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>{t("Probar OPEN VOLEY")} <ArrowUpRight size={19}/></button><span>{t("7 días para explorar · Sin tarjeta para comenzar")}</span></div></section>
+   <section id="demo" className="ov-demo"><div className="ov-container ov-demo-grid"><div><p className="ov-eyebrow">{t("Hablemos de tu equipo")}</p><h2>{t("Tu próximo partido")}<br />{t("puede decirte más.")}</h2><p>{t("Dejanos tus datos para coordinar una demo o consultar por OPEN VOLEY.")}</p><div className="ov-demo-mark" aria-hidden="true"><Volleyball /><span>{t("El juego cambia.")}<br />{t("Tu mirada también.")}</span></div></div><LeadRegistrationForm variant="landing"/></div></section>
+   <section className="ov-section ov-container ov-faq"><div><h2>{t("Preguntas")}<br />{t("desde el banco.")}</h2></div><div>{questions.map(([title, answer], i) => <article key={title}><h3><button aria-expanded={openQuestion === i} aria-controls={`ov-answer-${i}`} onClick={() => setOpenQuestion(openQuestion === i ? null : i)}>{t(title)}{openQuestion === i ? <Minus size={18}/> : <Plus size={18}/>}</button></h3><div id={`ov-answer-${i}`} hidden={openQuestion !== i}><p>{t(answer)}</p></div></article>)}</div></section>
   </main>
-  <footer className="ov-footer"><div className="ov-container"><a href="#inicio" className="ov-brand"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><p>Scouting, análisis y entrenamiento de vóley.</p><a href="#demo">Consultar por la plataforma <ArrowUpRight size={16}/></a><span>© {new Date().getFullYear()} OPEN VOLEY</span></div></footer>
+  <footer className="ov-footer"><div className="ov-container"><a href="#inicio" className="ov-brand"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><p>{t("Scouting, análisis y entrenamiento de vóley.")}</p><a href="#demo">{t("Consultar por la plataforma")} <ArrowUpRight size={16}/></a><span>© {new Date().getFullYear()} OPEN VOLEY</span></div></footer>
  </div>;
 };
