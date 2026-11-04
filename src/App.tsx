@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 20680)
-Total output lines: 1957
-
 import { saveScoutPreset } from './utils/scoutCourtLayout';
 import {UserDataStoragePanel} from './components/UserDataStoragePanel';
 import { userStorage } from './services/userStorage';
@@ -1058,7 +1055,60 @@ export default function App() {
         onLocaleChange={changeLocale}
       />
 
-      {/* Main Content Area Wrapper -…680 tokens truncated…-200 active:scale-95 border border-slate-700 transition min-w-[40px] min-h-[40px] flex items-center justify-center"
+      {/* Main Content Area Wrapper - Adjusts with Sidebar width */}
+      <div
+        className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
+          isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60'
+        }`}
+      >
+        <UserDataStoragePanel/>
+        {/* Floating Toast Notification */}
+        {floatingToast && (
+          <div className="fixed top-4 right-4 z-50 bg-slate-900 border border-amber-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300">
+            <div className="p-1.5 bg-amber-500/20 text-amber-400 rounded-xl shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="font-bold text-xs text-amber-400">{floatingToast.title}</div>
+              {floatingToast.subtitle && (
+                <div className="text-[11px] text-slate-300">{floatingToast.subtitle}</div>
+              )}
+            </div>
+            <button
+              onClick={() => setFloatingToast(null)}
+              className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white text-xs ml-2 cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* Payment Success Floating Toast Notification */}
+        {paymentSuccessToast && (
+          <div className="fixed top-4 right-4 z-50 bg-emerald-500 text-slate-950 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-300 animate-bounce">
+            <CheckCircle2 className="w-5 h-5 text-slate-950 shrink-0" />
+            <div>
+          <div className="font-black text-xs uppercase tracking-wide">{locale === 'pt-BR' ? 'Pagamento do Mercado Pago aprovado!' : '¡Pago de Mercado Pago Aprobado!'}</div>
+              <div className="text-xs font-medium">{paymentSuccessToast.message}</div>
+            </div>
+            <button
+              onClick={() => setPaymentSuccessToast(null)}
+              className="p-1 hover:bg-emerald-600 rounded-lg text-slate-950 font-black ml-2"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* Top Header Bar */}
+        <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-md">
+          <div className="px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4">
+            
+            {/* Left: Mobile Toggle & Current View Breadcrumb */}
+            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="lg:hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 active:scale-95 border border-slate-700 transition min-w-[40px] min-h-[40px] flex items-center justify-center"
                 title={t('Abrir menú completo de navegación')}
                 aria-label={t('Abrir menú lateral')}
               >

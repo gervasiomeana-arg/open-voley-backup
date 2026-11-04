@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 20860)
-Total output lines: 1669
-
 import { userStorage } from '../services/userStorage';
 import React, { useState } from 'react';
 import { MatchData, ScoutLayoutPreset, Player, ScoutCodeAction, TeamSide, VolleySkill, EvaluationSymbol } from '../types';
@@ -869,7 +866,85 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         rx="2"
                         fill="#083344"
                         stroke={isSelected ? '#38bdf8' : '#06b6d4'}
-                        strokeWidth={isSelected ? '0.9' :…860 tokens truncated…                <text x={coord.x + 2} y={coord.y - 3} fill="#fdba74" fontSize="1.8" fontWeight="bold" textAnchor="middle">
+                        strokeWidth={isSelected ? '0.9' : '0.6'}
+                      />
+
+                      {/* Number Badge */}
+                      <circle cx={coord.x - 4} cy={coord.y - 1.5} r="2.4" fill="#06b6d4" />
+                      <text x={coord.x - 4} y={coord.y - 0.7} fill="#082f49" fontSize="2.2" fontWeight="900" textAnchor="middle">
+                        {pNum}
+                      </text>
+
+                      {/* Position Tag */}
+                      <text x={coord.x + 2} y={coord.y - 3} fill="#7dd3fc" fontSize="1.8" fontWeight="bold" textAnchor="middle">
+                        {player?.position || 'JUG'}
+                      </text>
+
+                      {/* Name preview */}
+                      <text x={coord.x + 2} y={coord.y - 0.5} fill="#ffffff" fontSize="2.1" fontWeight="bold" textAnchor="middle">
+                        {player?.name ? player.name.split(' ')[0].slice(0, 6) : `#${pNum}`}
+                      </text>
+
+                      {/* Height / Reach micro label */}
+                      <text x={coord.x} y={coord.y + 3.2} fill="#94a3b8" fontSize="1.6" textAnchor="middle">
+                        {player?.spikeReachCm ? `↑${player.spikeReachCm}cm` : `Z${zone}`}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* === INTERACTIVE PLAYER CARDS ON COURT: HOME TEAM (BOTTOM) === */}
+                {[1, 2, 3, 4, 5, 6].map((zone) => {
+                  const data = getCourtPlayer('home', zone);
+                  if (!data) return null;
+                  const coord = ZONE_COORDS_HOME[zone];
+                  const player = data.player;
+                  const pNum = data.number;
+                  const isSelected = selectedPlayerForProfile?.id === player?.id;
+
+                  return (
+                    <g
+                      key={`home_player_on_court_${zone}`}
+                      className="cursor-pointer group"
+                      onClick={() => {
+                        if (player) setSelectedPlayerForProfile(player);
+                      }}
+                    >
+                      {/* Outer Card Glow on selection */}
+                      {isSelected && (
+                        <rect
+                          x={coord.x - 7.5}
+                          y={coord.y - 6.5}
+                          width="15"
+                          height="12"
+                          rx="3"
+                          fill="#a855f7"
+                          fillOpacity="0.4"
+                          stroke="#c084fc"
+                          strokeWidth="0.8"
+                        />
+                      )}
+
+                      {/* Player Box */}
+                      <rect
+                        x={coord.x - 7}
+                        y={coord.y - 6}
+                        width="14"
+                        height="10.5"
+                        rx="2"
+                        fill="#431407"
+                        stroke={isSelected ? '#fb923c' : '#ea580c'}
+                        strokeWidth={isSelected ? '0.9' : '0.6'}
+                      />
+
+                      {/* Number Badge */}
+                      <circle cx={coord.x - 4} cy={coord.y - 1.5} r="2.4" fill="#f97316" />
+                      <text x={coord.x - 4} y={coord.y - 0.7} fill="#431407" fontSize="2.2" fontWeight="900" textAnchor="middle">
+                        {pNum}
+                      </text>
+
+                      {/* Position Tag */}
+                      <text x={coord.x + 2} y={coord.y - 3} fill="#fdba74" fontSize="1.8" fontWeight="bold" textAnchor="middle">
                         {player?.position || 'JUG'}
                       </text>
 
