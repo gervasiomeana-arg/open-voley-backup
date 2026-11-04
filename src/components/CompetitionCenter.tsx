@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import React, { useEffect, useState } from "react";
 import { Plus, Trophy, X } from "lucide-react";
 import {
@@ -155,7 +156,7 @@ export const CompetitionCenter: React.FC<CompetitionCenterProps> = ({
   function table(group?: "A" | "B") {
     if (!active) return null;
     return (
-      <div className="overflow-x-auto">
+      <LocalizedTree locale={getStoredLocale()}><div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <caption className="py-3 text-left font-bold">
             {group ? `Zona ${group}` : "Tabla de posiciones"} ·{" "}
@@ -191,7 +192,7 @@ export const CompetitionCenter: React.FC<CompetitionCenterProps> = ({
             ))}
           </tbody>
         </table>
-      </div>
+      </div></LocalizedTree>
     );
   }
   return (

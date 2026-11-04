@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import React, { useEffect, useState } from 'react';
 import { 
   Dumbbell, 
@@ -85,7 +86,7 @@ export const TrainingCenter: React.FC<TrainingCenterProps> = ({
 
   if (!activeSession) {
     return (
-      <div className="space-y-6 animate-in fade-in duration-200">
+      <LocalizedTree locale={getStoredLocale()}><div className="space-y-6 animate-in fade-in duration-200">
         <div className="p-8 bg-slate-900 border border-slate-800 rounded-3xl text-center shadow-xl">
           <Dumbbell className="w-10 h-10 text-purple-400 mx-auto mb-3" />
           <h2 className="text-lg font-black text-white">Todavía no hay sesiones de entrenamiento</h2>
@@ -101,7 +102,7 @@ export const TrainingCenter: React.FC<TrainingCenterProps> = ({
             Generar primera sesión
           </button>
         </div>
-      </div>
+      </div></LocalizedTree>
     );
   }
 

@@ -1,8 +1,12 @@
+Warning: truncated output (original token count: 20860)
+Total output lines: 1669
+
 import { userStorage } from '../services/userStorage';
 import React, { useState } from 'react';
 import { MatchData, ScoutLayoutPreset, Player, ScoutCodeAction, TeamSide, VolleySkill, EvaluationSymbol } from '../types';
 import { parseScoutCodes, parseScoutCode, EVALUATION_NAMES, SKILL_NAMES } from '../utils/codeParser';
 import { VolleyballScoutMode } from './VolleyballScoutMode';
+import { AppLocale, LocalizedTree, translateUi } from '../shared/locale';
 import { 
   Users, 
   UserPlus, 
@@ -57,6 +61,7 @@ interface UnifiedTacticalHubProps {
   onBackToMatchCenter?: () => void;
   onOpenPreparation?: () => void;
   onSaveScoutPreset?: (team: TeamSide, key: string, preset: ScoutLayoutPreset | null) => void;
+  locale?: AppLocale;
 }
 
 // Coordinates for standard volleyball zones 1-9 on a 0..100 grid for each half
@@ -107,7 +112,9 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
   onBackToMatchCenter,
   onOpenPreparation,
   onSaveScoutPreset,
+  locale = 'es' as AppLocale,
 }) => {
+  const t = (text: string) => translateUi(text, locale);
   // Active viewing state (Default: MODO RÁPIDO, remembers preference in localStorage)
   const [scoutViewMode, setScoutViewMode] = useState<'quick_touch' | 'tactical_2d'>(() => {
     const saved = userStorage.getItem('openvoley_scouting_mode');
@@ -365,7 +372,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
   const currentSetData = match.sets[match.currentSet - 1] || { scoreHome: 0, scoreAway: 0 };
 
   return (
-    <div className="space-y-3 sm:space-y-6 text-slate-100 max-w-[1600px] mx-auto">
+    <LocalizedTree locale={locale}><div className="space-y-3 sm:space-y-6 text-slate-100 max-w-[1600px] mx-auto">
 
       {/* QUICK WORKFLOW BAR: Return to Match Center + Context Metadata + Clean Secondary Actions */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2 sm:p-3.5 shadow-lg flex items-center justify-between gap-2 sm:gap-3">
@@ -377,7 +384,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               title="Volver al Centro del Partido"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden sm:inline">← Centro del Partido</span><span className="sm:hidden">Centro</span>
+              <span className="hidden sm:inline">← {t('Centro del Partido')}</span><span className="sm:hidden">{t('Centro')}</span>
             </button>
           )}
 
@@ -403,7 +410,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               title="Biblioteca de Equipos Propios y Rivales"
             >
               <Users className="w-3.5 h-3.5 text-slate-400" />
-              <span>Equipos</span>
+              <span>{t('Equipos')}</span>
             </button>
           )}
 
@@ -414,7 +421,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               title="Guardar partido actual en historial"
             >
               <Save className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Guardar</span>
+              <span>{t('Guardar')}</span>
             </button>
           )}
 
@@ -433,10 +440,10 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
             <button
               onClick={onOpenHelp}
               className="bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 font-semibold text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 border border-slate-700 transition cursor-pointer"
-              title="Ver guía y atajos de teclado"
+              title={t('Ver guía y atajos de teclado')}
             >
               <HelpCircle className="w-3.5 h-3.5" />
-              <span>Ayuda</span>
+              <span>{t('Ayuda')}</span>
             </button>
           )}
         </div>
@@ -446,9 +453,9 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3 bg-slate-900 border border-slate-800 p-2 sm:p-3 rounded-2xl shadow-md">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-amber-400" />
-          <span className="font-bold text-xs text-slate-300">Registro</span>
+          <span className="font-bold text-xs text-slate-300">{t('Registro')}</span>
           <span className="text-[11px] text-slate-400 hidden md:inline">
-            {scoutViewMode === 'quick_touch' ? 'Panel de toques rápidos optimizado' : 'Consola completa con coordenadas espaciales'}
+            {t(scoutViewMode === 'quick_touch' ? 'Panel de toques rápidos optimizado' : 'Consola completa con coordenadas espaciales')}
           </span>
         </div>
 
@@ -463,7 +470,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
             }`}
           >
             <Zap className="w-3.5 h-3.5" />
-            <span>Modo Rápido</span>
+            <span>{t('Modo Rápido')}</span>
           </button>
 
           <button
@@ -475,7 +482,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
             }`}
           >
             <LayoutGrid className="w-3.5 h-3.5" />
-            <span>Modo Completo</span>
+            <span>{t('Modo Completo')}</span>
           </button>
         </div>
       </div>
@@ -483,7 +490,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
       {scoutViewMode === 'quick_touch' && (
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-300 mr-auto">Corregir plantel durante el partido</span>
+            <span className="text-xs font-bold text-slate-300 mr-auto">{t('Corregir plantel durante el partido')}</span>
             {(['home', 'away'] as const).map((side) => (
               <button
                 key={side}
@@ -533,6 +540,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
       {scoutViewMode === 'quick_touch' ? (
         <VolleyballScoutMode
           key={match.id}
+          locale={locale}
           match={match}
           onAddAction={onAddAction}
           onDeleteAction={onDeleteAction}
@@ -554,7 +562,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
           <div className="text-left">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
-              <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">Local</span>
+              <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">{t('Local')}</span>
             </div>
             <div className="text-xl sm:text-2xl font-black text-white">{match.homeTeamName}</div>
             <div className="flex items-center gap-2 mt-1">
@@ -563,7 +571,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                 className="inline-flex items-center gap-1 text-xs bg-slate-800 hover:bg-orange-500/20 hover:text-orange-400 text-slate-300 px-2.5 py-1 rounded-xl border border-slate-700 transition font-bold"
                 title="Rotar equipo Local en sentido horario (1->6->5->4->3->2->1)"
               >
-                <RotateCw className="w-3.5 h-3.5 text-orange-400" /> Rotar Formación
+                <RotateCw className="w-3.5 h-3.5 text-orange-400" /> {t('Rotar Formación')}
               </button>
               <button
                 onClick={() => setActiveSidePanel('home')}
@@ -655,7 +663,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
           </div>
           <div className="text-right order-1 md:order-2">
             <div className="flex items-center justify-end gap-2">
-              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Visitante</span>
+              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">{t('Visitante')}</span>
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
             </div>
             <div className="text-xl sm:text-2xl font-black text-white">{match.awayTeamName}</div>
@@ -671,7 +679,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                 className="inline-flex items-center gap-1 text-xs bg-slate-800 hover:bg-cyan-500/20 hover:text-cyan-400 text-slate-300 px-2.5 py-1 rounded-xl border border-slate-700 transition font-bold"
                 title="Rotar equipo Visitante en sentido horario"
               >
-                <RotateCw className="w-3.5 h-3.5 text-cyan-400" /> Rotar Formación
+                <RotateCw className="w-3.5 h-3.5 text-cyan-400" /> {t('Rotar Formación')}
               </button>
             </div>
           </div>
@@ -683,7 +691,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
       <div className="bg-slate-900 border border-slate-800 rounded-2xl px-4 py-2.5 shadow-md flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-[10px] font-black tracking-widest uppercase bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg shrink-0">
-            ÚLTIMA ACCIÓN
+            {t('ÚLTIMA ACCIÓN')}
           </span>
           {match.actions && match.actions.length > 0 ? (
             <div className="flex items-center gap-2 text-xs font-bold text-white truncate">
@@ -694,7 +702,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               </span>
             </div>
           ) : (
-            <span className="text-xs text-slate-500 italic">Listo para registrar acción en el partido...</span>
+            <span className="text-xs text-slate-500 italic">{t('Listo para registrar acción en el partido...')}</span>
           )}
         </div>
 
@@ -706,7 +714,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               ? 'bg-slate-800 hover:bg-rose-600 text-slate-200 hover:text-white border border-slate-700 active:scale-95'
               : 'bg-slate-900 text-slate-600 border border-slate-800 cursor-not-allowed'
           }`}
-          title="Deshacer inmediatamente la última acción registrada"
+          title={locale === 'pt-BR' ? 'Desfazer imediatamente a última jogada registrada' : 'Deshacer inmediatamente la última acción registrada'}
         >
           <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
           <span>↶ DESHACER</span>
@@ -861,85 +869,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         rx="2"
                         fill="#083344"
                         stroke={isSelected ? '#38bdf8' : '#06b6d4'}
-                        strokeWidth={isSelected ? '0.9' : '0.6'}
-                      />
-
-                      {/* Number Badge */}
-                      <circle cx={coord.x - 4} cy={coord.y - 1.5} r="2.4" fill="#06b6d4" />
-                      <text x={coord.x - 4} y={coord.y - 0.7} fill="#082f49" fontSize="2.2" fontWeight="900" textAnchor="middle">
-                        {pNum}
-                      </text>
-
-                      {/* Position Tag */}
-                      <text x={coord.x + 2} y={coord.y - 3} fill="#7dd3fc" fontSize="1.8" fontWeight="bold" textAnchor="middle">
-                        {player?.position || 'JUG'}
-                      </text>
-
-                      {/* Name preview */}
-                      <text x={coord.x + 2} y={coord.y - 0.5} fill="#ffffff" fontSize="2.1" fontWeight="bold" textAnchor="middle">
-                        {player?.name ? player.name.split(' ')[0].slice(0, 6) : `#${pNum}`}
-                      </text>
-
-                      {/* Height / Reach micro label */}
-                      <text x={coord.x} y={coord.y + 3.2} fill="#94a3b8" fontSize="1.6" textAnchor="middle">
-                        {player?.spikeReachCm ? `↑${player.spikeReachCm}cm` : `Z${zone}`}
-                      </text>
-                    </g>
-                  );
-                })}
-
-                {/* === INTERACTIVE PLAYER CARDS ON COURT: HOME TEAM (BOTTOM) === */}
-                {[1, 2, 3, 4, 5, 6].map((zone) => {
-                  const data = getCourtPlayer('home', zone);
-                  if (!data) return null;
-                  const coord = ZONE_COORDS_HOME[zone];
-                  const player = data.player;
-                  const pNum = data.number;
-                  const isSelected = selectedPlayerForProfile?.id === player?.id;
-
-                  return (
-                    <g
-                      key={`home_player_on_court_${zone}`}
-                      className="cursor-pointer group"
-                      onClick={() => {
-                        if (player) setSelectedPlayerForProfile(player);
-                      }}
-                    >
-                      {/* Outer Card Glow on selection */}
-                      {isSelected && (
-                        <rect
-                          x={coord.x - 7.5}
-                          y={coord.y - 6.5}
-                          width="15"
-                          height="12"
-                          rx="3"
-                          fill="#a855f7"
-                          fillOpacity="0.4"
-                          stroke="#c084fc"
-                          strokeWidth="0.8"
-                        />
-                      )}
-
-                      {/* Player Box */}
-                      <rect
-                        x={coord.x - 7}
-                        y={coord.y - 6}
-                        width="14"
-                        height="10.5"
-                        rx="2"
-                        fill="#431407"
-                        stroke={isSelected ? '#fb923c' : '#ea580c'}
-                        strokeWidth={isSelected ? '0.9' : '0.6'}
-                      />
-
-                      {/* Number Badge */}
-                      <circle cx={coord.x - 4} cy={coord.y - 1.5} r="2.4" fill="#f97316" />
-                      <text x={coord.x - 4} y={coord.y - 0.7} fill="#431407" fontSize="2.2" fontWeight="900" textAnchor="middle">
-                        {pNum}
-                      </text>
-
-                      {/* Position Tag */}
-                      <text x={coord.x + 2} y={coord.y - 3} fill="#fdba74" fontSize="1.8" fontWeight="bold" textAnchor="middle">
+                        strokeWidth={isSelected ? '0.9' :…860 tokens truncated…                <text x={coord.x + 2} y={coord.y - 3} fill="#fdba74" fontSize="1.8" fontWeight="bold" textAnchor="middle">
                         {player?.position || 'JUG'}
                       </text>
 
@@ -990,7 +920,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
             {/* Court Actions & Substitution Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-slate-400">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-300">Convención de colores:</span>
+                <span className="font-bold text-slate-300">{t('Convención de colores:')}</span>
                 <span className="text-emerald-400 font-semibold">● Punto (#)</span>
                 <span className="text-amber-400 font-semibold">● Continuidad (+)</span>
                 <span className="text-rose-400 font-semibold">● Error (=)</span>
@@ -1091,19 +1021,19 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               {/* Physical Measurements Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-slate-500 block">Estatura</span>
+                  <span className="text-[10px] text-slate-500 block">{t('Estatura')}</span>
                   <span className="font-bold text-white font-mono">{selectedPlayerForProfile.heightCm ? `${selectedPlayerForProfile.heightCm} cm` : '-'}</span>
                 </div>
                 <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-slate-500 block">Peso</span>
+                  <span className="text-[10px] text-slate-500 block">{t('Peso')}</span>
                   <span className="font-bold text-white font-mono">{selectedPlayerForProfile.weightKg ? `${selectedPlayerForProfile.weightKg} kg` : '-'}</span>
                 </div>
                 <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-slate-500 block">Salto Ataque</span>
+                  <span className="text-[10px] text-slate-500 block">{t('Salto Ataque')}</span>
                   <span className="font-bold text-emerald-400 font-mono">{selectedPlayerForProfile.spikeReachCm ? `${selectedPlayerForProfile.spikeReachCm} cm` : '-'}</span>
                 </div>
                 <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-slate-500 block">Salto Bloqueo</span>
+                  <span className="text-[10px] text-slate-500 block">{t('Salto Bloqueo')}</span>
                   <span className="font-bold text-sky-400 font-mono">{selectedPlayerForProfile.blockReachCm ? `${selectedPlayerForProfile.blockReachCm} cm` : '-'}</span>
                 </div>
               </div>
@@ -1112,13 +1042,13 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               <div className="space-y-2 text-xs">
                 {selectedPlayerForProfile.hittingStyle && (
                   <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-slate-300">
-                    <span className="font-bold text-amber-400 block text-[11px]">Técnica de Golpeo:</span>
+                    <span className="font-bold text-amber-400 block text-[11px]">{t('Técnica de Golpeo:')}</span>
                     {selectedPlayerForProfile.hittingStyle}
                   </div>
                 )}
                 {selectedPlayerForProfile.kinesiologyNotes && (
                   <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-slate-300">
-                    <span className="font-bold text-rose-400 block text-[11px]">Kinesiología & Lesiones:</span>
+                    <span className="font-bold text-rose-400 block text-[11px]">{t('Kinesiología & Lesiones:')}</span>
                     {selectedPlayerForProfile.kinesiologyNotes}
                   </div>
                 )}
@@ -1131,7 +1061,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <h4 className="font-bold text-amber-400 flex items-center gap-2 text-sm">
-                  <Keyboard className="w-4 h-4" /> Consola de Códigos en Vivo
+                  <Keyboard className="w-4 h-4" /> {t('Consola de Códigos en Vivo')}
                 </h4>
                 <span className="text-[11px] text-slate-500 font-mono">*14AH#21 | A05SM=91</span>
               </div>
@@ -1160,7 +1090,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                     <div className="flex items-center justify-between text-emerald-400 font-bold text-[11px] uppercase tracking-wider">
                       <span className="flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        {parsedPreviews.length > 1 ? 'Acción Encadenada (2 jugadas en 1 paso)' : 'Acción Identificada'}
+                        {parsedPreviews.length > 1 ? t('Acción Encadenada (2 jugadas en 1 paso)') : t('Acción Identificada')}
                       </span>
                       <span className="font-mono text-[10px] bg-emerald-900/60 px-2 py-0.5 rounded text-emerald-200">
                         {inputCode.toUpperCase()}
@@ -1184,14 +1114,14 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                   </div>
                 ) : inputCode.length > 0 ? (
                   <div className="p-2 bg-rose-950/60 border border-rose-500/40 rounded-xl text-rose-300 text-xs font-mono flex items-center gap-1.5">
-                    <AlertCircle className="w-3.5 h-3.5 shrink-0" /> Código en curso... (ej: a14sq.4#17, *03s.10#, 09at.14#)
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {t('Código en curso... (ej: a14sq.4#17, *03s.10#, 09at.14#')}
                   </div>
                 ) : (
                   /* Live Scouting Code Shortcut Guide */
                   <div className="bg-slate-950/80 border border-slate-800 p-2.5 rounded-2xl text-[11px] text-slate-400 space-y-1.5">
                     <div className="font-bold text-amber-400 flex items-center justify-between text-[10px] uppercase tracking-wider">
-                      <span>💡 Sintaxis Acelerada de Saque / Recepción:</span>
-                      <span className="text-slate-500 font-mono">Separador punto (.)</span>
+                      <span>💡 {t('Sintaxis Acelerada de Saque / Recepción:')}</span>
+                      <span className="text-slate-500 font-mono">{t('Separador punto (.)')}</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 font-mono text-[10px]">
                       <button
@@ -1200,7 +1130,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         className="bg-slate-900 hover:bg-slate-800 p-1.5 rounded-lg text-left text-slate-300 border border-slate-800 transition cursor-pointer flex items-center justify-between"
                       >
                         <span className="text-amber-300 font-bold">a14sq.4#17</span>
-                        <span className="text-[9px] text-slate-500">Saque + Rec. (#)</span>
+                        <span className="text-[9px] text-slate-500">{t('Saque + Rec. (#)')}</span>
                       </button>
                       <button
                         type="button"
@@ -1208,7 +1138,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         className="bg-slate-900 hover:bg-slate-800 p-1.5 rounded-lg text-left text-slate-300 border border-slate-800 transition cursor-pointer flex items-center justify-between"
                       >
                         <span className="text-emerald-300 font-bold">14sq.4=</span>
-                        <span className="text-[9px] text-slate-500">Saque Ace (#)</span>
+                        <span className="text-[9px] text-slate-500">{t('Saque Ace (#)')}</span>
                       </button>
                       <button
                         type="button"
@@ -1216,7 +1146,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         className="bg-slate-900 hover:bg-slate-800 p-1.5 rounded-lg text-left text-slate-300 border border-slate-800 transition cursor-pointer flex items-center justify-between"
                       >
                         <span className="text-sky-300 font-bold">*09at.10=</span>
-                        <span className="text-[9px] text-slate-500">Ataque Punto (#)</span>
+                        <span className="text-[9px] text-slate-500">{t('Ataque Punto (#)')}</span>
                       </button>
                       <button
                         type="button"
@@ -1224,7 +1154,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         className="bg-slate-900 hover:bg-slate-800 p-1.5 rounded-lg text-left text-slate-300 border border-slate-800 transition cursor-pointer flex items-center justify-between"
                       >
                         <span className="text-purple-300 font-bold">*09at.14b#</span>
-                        <span className="text-[9px] text-slate-500">Bloqueo Punto (#)</span>
+                        <span className="text-[9px] text-slate-500">{t('Bloqueo Punto (#)')}</span>
                       </button>
                     </div>
                   </div>
@@ -1234,24 +1164,24 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               {/* Quick Action Builder Strip */}
               <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-2 text-xs">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  Constructor Táctico Rápido
+                  {t('Constructor Táctico Rápido')}
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-slate-500 block text-[10px] mb-0.5">Equipo</label>
+                    <label className="text-slate-500 block text-[10px] mb-0.5">{t('Equipo')}</label>
                     <select
                       value={selectedTeam}
                       onChange={(e) => setSelectedTeam(e.target.value as TeamSide)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-xs"
                     >
-                      <option value="home">Local (*)</option>
-                      <option value="away">Rival (A)</option>
+                      <option value="home">{t('Local')} (*)</option>
+                      <option value="away">{locale === 'pt-BR' ? 'Adversário (A)' : 'Rival (A)'}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 block text-[10px] mb-0.5">Jugador</label>
+                    <label className="text-slate-500 block text-[10px] mb-0.5">{t('Jugador')}</label>
                     <select
                       value={selectedPlayerNum}
                       onChange={(e) => setSelectedPlayerNum(Number(e.target.value))}
@@ -1266,39 +1196,39 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-500 block text-[10px] mb-0.5">Fundamento</label>
+                    <label className="text-slate-500 block text-[10px] mb-0.5">{t('Fundamento')}</label>
                     <select
                       value={selectedSkill}
                       onChange={(e) => setSelectedSkill(e.target.value as VolleySkill)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-xs"
                     >
-                      <option value="A">Ataque (A)</option>
-                      <option value="S">Saque (S)</option>
-                      <option value="R">Recepción (R)</option>
-                      <option value="B">Bloqueo (B)</option>
-                      <option value="D">Defensa (D)</option>
-                      <option value="E">Pase (E)</option>
+                      <option value="A">{locale === 'pt-BR' ? 'Ataque (A)' : 'Ataque (A)'}</option>
+                      <option value="S">{locale === 'pt-BR' ? 'Saque (S)' : 'Saque (S)'}</option>
+                      <option value="R">{locale === 'pt-BR' ? 'Recepção (R)' : 'Recepción (R)'}</option>
+                      <option value="B">{locale === 'pt-BR' ? 'Bloqueio (B)' : 'Bloqueo (B)'}</option>
+                      <option value="D">{locale === 'pt-BR' ? 'Defesa (D)' : 'Defensa (D)'}</option>
+                      <option value="E">{locale === 'pt-BR' ? 'Passe (E)' : 'Pase (E)'}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 block text-[10px] mb-0.5">Resultado</label>
+                    <label className="text-slate-500 block text-[10px] mb-0.5">{t('Resultado')}</label>
                     <select
                       value={selectedEval}
                       onChange={(e) => setSelectedEval(e.target.value as EvaluationSymbol)}
                       className="w-full bg-slate-900 border border-slate-700 rounded-lg p-1.5 text-white text-xs font-mono"
                     >
-                      <option value="#">Punto (#)</option>
-                      <option value="+">Positivo (+)</option>
-                      <option value="!">Neutro (!)</option>
-                      <option value="-">Negativo (-)</option>
-                      <option value="=">Error (=)</option>
-                      <option value="/">Bloqueado (/)</option>
+                      <option value="#">{locale === 'pt-BR' ? 'Ponto (#)' : 'Punto (#)'}</option>
+                      <option value="+">{locale === 'pt-BR' ? 'Positivo (+)' : 'Positivo (+)'}</option>
+                      <option value="!">{locale === 'pt-BR' ? 'Neutro (!)' : 'Neutro (!)'}</option>
+                      <option value="-">{locale === 'pt-BR' ? 'Negativo (-)' : 'Negativo (-)'}</option>
+                      <option value="=">{locale === 'pt-BR' ? 'Erro (=)' : 'Error (=)'}</option>
+                      <option value="/">{locale === 'pt-BR' ? 'Bloqueado (/)' : 'Bloqueado (/)'}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-slate-500 block text-[10px] mb-0.5">Desde Z.</label>
+                    <label className="text-slate-500 block text-[10px] mb-0.5">{t('Desde Z.')}</label>
                     <select
                       value={selectedStartZone}
                       onChange={(e) => setSelectedStartZone(Number(e.target.value))}
@@ -1313,7 +1243,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-500 block text-[10px] mb-0.5">Hacia Z.</label>
+                    <label className="text-slate-500 block text-[10px] mb-0.5">{t('Hacia Z.')}</label>
                     <select
                       value={selectedEndZone}
                       onChange={(e) => setSelectedEndZone(Number(e.target.value))}
@@ -1342,7 +1272,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
                   <span>Feed de Jugadas ({match.actions.length})</span>
-                  <span>Últimas acciones</span>
+                  <span>{t('Últimas acciones')}</span>
                 </div>
                 <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1 custom-scrollbar">
                   {match.actions.length === 0 ? (
@@ -1381,7 +1311,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                             <button
                               onClick={() => onDeleteAction(act.id)}
                               className="p-1 text-slate-500 hover:text-rose-400 rounded transition"
-                              title="Deshacer última jugada"
+                              title={t('Deshacer última jugada')}
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
                             </button>
@@ -1532,7 +1462,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               {playerFormError && <p role="alert" className="text-rose-400 font-bold">{playerFormError}</p>}
               <div className="grid grid-cols-12 gap-3">
                 <div className="col-span-3">
-                  <label className="text-slate-300 font-bold block mb-1">Dorsal #</label>
+                  <label className="text-slate-300 font-bold block mb-1">{t('Dorsal #')}</label>
                   <input
                     type="number"
                     required
@@ -1545,7 +1475,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                 </div>
 
                 <div className="col-span-6">
-                  <label className="text-slate-300 font-bold block mb-1">Nombre Completo</label>
+                  <label className="text-slate-300 font-bold block mb-1">{t('Nombre Completo')}</label>
                   <input
                     type="text"
                     required
@@ -1557,17 +1487,17 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                 </div>
 
                 <div className="col-span-3">
-                  <label className="text-slate-300 font-bold block mb-1">Posición</label>
+                  <label className="text-slate-300 font-bold block mb-1">{t('Posición')}</label>
                   <select
                     value={playerFormData.position || 'OH'}
                     onChange={(e) => setPlayerFormData({ ...playerFormData, position: e.target.value as Player['position'] })}
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-white text-xs focus:border-emerald-500 focus:outline-none"
                   >
-                    <option value="OH">OH - Punta</option>
-                    <option value="MB">MB - Central</option>
-                    <option value="OPP">OPP - Opuesto</option>
-                    <option value="S">S - Armador</option>
-                    <option value="L">L - Líbero</option>
+                    <option value="OH">{t('OH - Punta')}</option>
+                    <option value="MB">{t('MB - Central')}</option>
+                    <option value="OPP">{t('OPP - Opuesto')}</option>
+                    <option value="S">{t('S - Armador')}</option>
+                    <option value="L">{t('L - Líbero')}</option>
                   </select>
                 </div>
               </div>
@@ -1575,7 +1505,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
               {/* Physical measurements */}
               <div className="grid grid-cols-4 gap-2">
                 <div>
-                  <label className="text-slate-400 block mb-1 text-[10px]">Altura (cm)</label>
+                  <label className="text-slate-400 block mb-1 text-[10px]">{t('Altura (cm)')}</label>
                   <input
                     type="number"
                     placeholder="185"
@@ -1585,7 +1515,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1 text-[10px]">Peso (kg)</label>
+                  <label className="text-slate-400 block mb-1 text-[10px]">{t('Peso (kg)')}</label>
                   <input
                     type="number"
                     placeholder="78"
@@ -1595,7 +1525,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1 text-[10px]">Salto Ataque</label>
+                  <label className="text-slate-400 block mb-1 text-[10px]">{t('Salto Ataque')}</label>
                   <input
                     type="number"
                     placeholder="320"
@@ -1605,7 +1535,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 block mb-1 text-[10px]">Salto Bloqueo</label>
+                  <label className="text-slate-400 block mb-1 text-[10px]">{t('Salto Bloqueo')}</label>
                   <input
                     type="number"
                     placeholder="300"
@@ -1618,10 +1548,10 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
 
               {/* Hitting Technique */}
               <div>
-                <label className="text-amber-400 font-bold block mb-1">Técnica de Golpeo & Preferencias</label>
+                <label className="text-amber-400 font-bold block mb-1">{t('Técnica de Golpeo & Preferencias')}</label>
                 <textarea
                   rows={2}
-                  placeholder="Ej: Ataque explosivo diagonal larga, saque flotante táctico a Zona 1..."
+                  placeholder={locale === 'pt-BR' ? 'Ex.: ataque diagonal forte, saque flutuante tático na zona 1...' : 'Ej: Ataque explosivo diagonal larga, saque flotante táctico a Zona 1...'}
                   value={playerFormData.hittingStyle || ''}
                   onChange={(e) => setPlayerFormData({ ...playerFormData, hittingStyle: e.target.value })}
                   className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-white focus:outline-none focus:border-amber-500"
@@ -1630,7 +1560,7 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
 
               {/* Kinesiology */}
               <div>
-                <label className="text-rose-400 font-bold block mb-1">Kinesiología & Lesiones</label>
+                <label className="text-rose-400 font-bold block mb-1">{t('Kinesiología & Lesiones')}</label>
                 <textarea
                   rows={2}
                   placeholder="Ej: Vendaje preventivo en tobillo, sobrecarga en hombro..."
@@ -1659,6 +1589,6 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </div></LocalizedTree>
   );
 };

@@ -21,6 +21,7 @@ import {
 import { MatchData, ClientUser, TrialInfo } from '../types';
 import { SavedMatchRecord, SavedTeam } from '../services/teamStorage';
 import { getMatchStage } from '../utils/matchStatus';
+import { AppLocale, LocalizedTree, translateUi } from '../shared/locale';
 
 interface HomeDashboardProps {
   match: MatchData;
@@ -39,6 +40,7 @@ interface HomeDashboardProps {
   trialInfo?: TrialInfo | null;
   hasVideoLoaded?: boolean;
   userCutsCount?: number;
+  locale?: AppLocale;
 }
 
 export const HomeDashboard: React.FC<HomeDashboardProps> = ({
@@ -58,7 +60,9 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   trialInfo,
   hasVideoLoaded = false,
   userCutsCount = 0,
+  locale = 'es' as AppLocale,
 }) => {
+  const t = (text: string) => translateUi(text, locale);
   const totalActions = match.actions ? match.actions.length : 0;
   const stageInfo = getMatchStage(match);
   const isMatchLive = stageInfo.stage === 'in_progress';
@@ -94,7 +98,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   const opponentTeams = (savedTeams || []).filter((t) => t.type === 'opponent');
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <LocalizedTree locale={locale}><div className="space-y-6 animate-in fade-in duration-200">
       
       {/* ========================================================================= */}
       {/* 1. HERO BANNER: [ ESTADO DEL PARTIDO ACTUAL ] CON ACCIÓN RECOMENDADA       */}
@@ -115,7 +119,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
               </span>
 
               <span className="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400 bg-slate-950 border border-slate-800">
-                {match.category || 'Primera División'}
+                {match.category || t('Primera División')}
               </span>
 
               {match.date && (
@@ -134,7 +138,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   {match.homeTeamName?.charAt(0) || 'L'}
                 </div>
                 <div>
-                  <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">Local</div>
+                  <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">{t('Local')}</div>
                   <div className="text-xl sm:text-2xl font-black text-white leading-tight">
                     {match.homeTeamName}
                   </div>
@@ -161,7 +165,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
               {/* Away Team */}
               <div className="flex items-center gap-3">
                 <div>
-                  <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider text-right">Visitante</div>
+                  <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider text-right">{t('Visitante')}</div>
                   <div className="text-xl sm:text-2xl font-black text-white leading-tight">
                     {match.awayTeamName}
                   </div>
@@ -175,7 +179,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             {/* Set & Points Details */}
             <div className="flex flex-wrap items-center gap-3 text-xs text-slate-300">
               <div className="bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800 font-semibold flex items-center gap-2 text-[11px]">
-                <span className="text-slate-400">Set Actual:</span>
+                <span className="text-slate-400">{t('Set Actual:')}</span>
                 <span className="text-white font-bold">Set {match.currentSet}</span>
                 <span className="font-mono text-amber-400 font-bold">
                   ({validHomeScore} - {validAwayScore})
@@ -189,7 +193,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
 
               {lastAction && (
                 <span className="text-slate-400 text-[11px] truncate max-w-xs">
-                  Última: <strong className="text-slate-200">{lastAction.playerName || 'Jugador'}</strong> ({lastAction.skill})
+                  {t('Última:')} <strong className="text-slate-200">{lastAction.playerName || t('Jugador')}</strong> ({lastAction.skill})
                 </span>
               )}
             </div>
@@ -203,7 +207,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 className="group relative flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20 active:scale-98 transition cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
-                <span>[ CONTINUAR SCOUT ]</span>
+                <span>{t('[ CONTINUAR SCOUT ]')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
             ) : stageInfo.stage === 'prepared' ? (
@@ -212,7 +216,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 className="group relative flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20 active:scale-98 transition cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
-                <span>[ INICIAR SCOUT ]</span>
+                <span>{t('[ INICIAR SCOUT ]')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
             ) : stageInfo.stage === 'finished' || stageInfo.stage === 'analyzed' ? (
@@ -221,7 +225,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 className="group relative flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm px-6 py-3 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-98 transition cursor-pointer"
               >
                 <BarChart2 className="w-4 h-4" />
-                <span>[ VER ESTADÍSTICAS ]</span>
+                <span>{t('[ VER ESTADÍSTICAS ]')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
             ) : onOpenMatchCenter ? (
@@ -230,7 +234,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 className="group relative flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20 active:scale-98 transition cursor-pointer"
               >
                 <Volleyball className="w-4 h-4 fill-current" />
-                <span>[ CENTRO DEL PARTIDO ]</span>
+                <span>{t('[ CENTRO DEL PARTIDO ]')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
             ) : (
@@ -239,7 +243,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 className="group relative flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm px-6 py-3 rounded-xl shadow-lg shadow-amber-500/20 active:scale-98 transition cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
-                <span>[ CONTINUAR PARTIDO ]</span>
+                <span>{t('[ CONTINUAR PARTIDO ]')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </button>
             )}
@@ -252,7 +256,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   className="flex items-center justify-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold py-2 px-3 rounded-xl border border-slate-700/80 transition cursor-pointer"
                 >
                   <Volleyball className="w-3 h-3 text-amber-400" />
-                  <span>Centro Partido</span>
+                  <span>{t('Centro Partido')}</span>
                 </button>
               )}
 
@@ -262,7 +266,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   className="flex items-center justify-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold py-2 px-3 rounded-xl border border-slate-700/80 transition cursor-pointer"
                 >
                   <Play className="w-3 h-3 text-cyan-400" />
-                  <span>Ver Scout</span>
+                  <span>{t('Ver Scout')}</span>
                 </button>
               ) : (
                 <button
@@ -270,7 +274,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   className="flex items-center justify-center gap-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold py-2 px-3 rounded-xl border border-slate-700/80 transition cursor-pointer"
                 >
                   <BarChart2 className="w-3 h-3 text-emerald-400" />
-                  <span>Planilla FIVB</span>
+                  <span>{t('Planilla FIVB')}</span>
                 </button>
               )}
             </div>
@@ -293,8 +297,8 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   <FolderKanban className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-white">Últimos Partidos</h3>
-                  <p className="text-[11px] text-slate-400">Historial y partidos guardados</p>
+                  <h3 className="font-extrabold text-sm text-white">{t('Últimos Partidos')}</h3>
+                  <p className="text-[11px] text-slate-400">{t('Historial y partidos guardados')}</p>
                 </div>
               </div>
 
@@ -303,7 +307,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 className="flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition"
               >
                 <PlusCircle className="w-3.5 h-3.5" />
-                <span>Nuevo</span>
+                <span>{t('Nuevo')}</span>
               </button>
             </div>
 
@@ -361,7 +365,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 ))
               ) : (
                 <div className="p-4 rounded-2xl bg-slate-800/30 border border-slate-800 text-center text-xs text-slate-500">
-                  No hay otros partidos guardados aún
+                  {t('No hay otros partidos guardados aún')}
                 </div>
               )}
             </div>
@@ -372,7 +376,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs p-2.5 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition"
           >
             <PlusCircle className="w-4 h-4 text-amber-400" />
-            <span>Configurar Nuevo Partido</span>
+            <span>{t('Configurar Nuevo Partido')}</span>
           </button>
         </div>
 
@@ -385,8 +389,8 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   <Users className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-white">Equipos & Planteles</h3>
-                  <p className="text-[11px] text-slate-400">Mis equipos y biblioteca de rivales</p>
+                  <h3 className="font-extrabold text-sm text-white">{t('Equipos & Planteles')}</h3>
+                  <p className="text-[11px] text-slate-400">{t('Mis equipos y biblioteca de rivales')}</p>
                 </div>
               </div>
 
@@ -394,7 +398,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 onClick={onOpenTeams}
                 className="flex items-center gap-1 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition"
               >
-                <span>Administrar</span>
+                <span>{t('Administrar')}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -403,14 +407,14 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             <div className="grid grid-cols-2 gap-2.5">
               <div className="p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60">
                 <div className="text-xl font-black text-white font-mono">{myTeams.length}</div>
-                <div className="text-[11px] font-bold text-cyan-400 mt-0.5">Mis Equipos</div>
-                <div className="text-[10px] text-slate-400">Planteles propios</div>
+                <div className="text-[11px] font-bold text-cyan-400 mt-0.5">{t('Mis Equipos')}</div>
+                <div className="text-[10px] text-slate-400">{t('Planteles propios')}</div>
               </div>
 
               <div className="p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60">
                 <div className="text-xl font-black text-white font-mono">{opponentTeams.length}</div>
-                <div className="text-[11px] font-bold text-orange-400 mt-0.5">Rivales</div>
-                <div className="text-[10px] text-slate-400">Equipos scouted</div>
+                <div className="text-[11px] font-bold text-orange-400 mt-0.5">{t('Rivales')}</div>
+                <div className="text-[10px] text-slate-400">{t('Equipos scouted')}</div>
               </div>
             </div>
 
@@ -439,7 +443,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs p-2.5 rounded-xl flex items-center justify-center gap-2 border border-slate-700 transition"
           >
             <Users className="w-4 h-4 text-cyan-400" />
-            <span>Ver Todos los Equipos</span>
+            <span>{t('Ver Todos los Equipos')}</span>
           </button>
         </div>
 
@@ -452,8 +456,8 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-white">Resumen de Actividad</h3>
-                  <p className="text-[11px] text-slate-400">Estado integral de la sesión</p>
+                  <h3 className="font-extrabold text-sm text-white">{t('Resumen de Actividad')}</h3>
+                  <p className="text-[11px] text-slate-400">{t('Estado integral de la sesión')}</p>
                 </div>
               </div>
             </div>
@@ -465,7 +469,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 <div className="flex items-center gap-2.5">
                   <Volleyball className="w-4 h-4 text-amber-400" />
                   <div>
-                    <div className="text-xs font-bold text-white">Scouting en Vivo</div>
+                    <div className="text-xs font-bold text-white">{t('Scouting en Vivo')}</div>
                     <div className="text-[10px] text-slate-400">{totalActions} acciones registradas</div>
                   </div>
                 </div>
@@ -482,7 +486,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 <div className="flex items-center gap-2.5">
                   <Video className="w-4 h-4 text-sky-400" />
                   <div>
-                    <div className="text-xs font-bold text-white">Sincronización Video</div>
+                    <div className="text-xs font-bold text-white">{t('Sincronización Video')}</div>
                     <div className="text-[10px] text-slate-400">
                       {hasVideoLoaded ? 'Video HD sincronizado' : 'Sin video montado'} • {userCutsCount} cortes
                     </div>
@@ -501,8 +505,8 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                 <div className="flex items-center gap-2.5">
                   <Sparkles className="w-4 h-4 text-purple-400" />
                   <div>
-                    <div className="text-xs font-bold text-white">IA Coach & Visión</div>
-                    <div className="text-[10px] text-slate-400">Consultas sobre acciones registradas</div>
+                    <div className="text-xs font-bold text-white">{t('IA Coach & Visión')}</div>
+                    <div className="text-[10px] text-slate-400">{t('Consultas sobre acciones registradas')}</div>
                   </div>
                 </div>
                 <button
@@ -520,10 +524,10 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             <div className="p-3 bg-slate-950/80 rounded-2xl border border-slate-800 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-300 font-medium">Licencia de Prueba:</span>
+                <span className="text-slate-300 font-medium">{t('Licencia de Prueba:')}</span>
               </div>
               <span className="font-bold text-emerald-400">
-                {trialInfo.daysRemaining} días restantes
+                {trialInfo.daysRemaining} {locale === 'pt-BR' ? 'dias restantes' : 'días restantes'}
               </span>
             </div>
           )}
@@ -531,6 +535,6 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
 
       </div>
 
-    </div>
+    </div></LocalizedTree>
   );
 };

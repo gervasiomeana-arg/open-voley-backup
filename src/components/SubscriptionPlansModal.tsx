@@ -13,6 +13,7 @@ import {
 import { ClientUser, TrialInfo } from '../types';
 import { MERCADO_PAGO_PAYMENT_LINK } from '../shared/paymentLink';
 import { LeadRegistrationForm } from './LeadRegistrationForm';
+import { AppLocale, LocalizedTree, translateUi } from '../shared/locale';
 
 interface SubscriptionPlansModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ interface SubscriptionPlansModalProps {
   currentUser?: ClientUser | null;
   trialInfo?: TrialInfo | null;
   onPaymentSuccess?: (updatedUser: ClientUser, updatedTrial: TrialInfo) => void;
+  locale?: AppLocale;
 }
 
 export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
@@ -27,14 +29,16 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
   onClose,
   currentUser,
   onPaymentSuccess,
+  locale = 'es' as AppLocale,
 }) => {
+  const t = (text: string) => translateUi(text, locale);
   const [catalog,setCatalog]=useState<any>(null);
   const [brazilPrices, setBrazilPrices] = useState<Record<string, number | null> | null>(null);
   const [brazilMessage, setBrazilMessage] = useState('');
   useEffect(() => {
-    if (!isOpen || !currentUser?.isAdmin) return;
+    if (!isOpen || (locale !== 'pt-BR' && !currentUser?.isAdmin)) return;
     fetch('/api/commercial/brazil-prices').then(r => { if (!r.ok) throw new Error('No se pudo cargar'); return r.json(); }).then(d => setBrazilPrices(d.prices)).catch(() => setBrazilMessage('No se pudo cargar la tabla de Brasil.'));
-  }, [isOpen, currentUser?.isAdmin]);
+  }, [isOpen, currentUser?.isAdmin, locale]);
   const saveBrazil = async () => {
     if (!brazilPrices) return;
     setBrazilMessage('Guardando...');
@@ -115,6 +119,22 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
       ],
     },
   ];
+  const ptPlanContent: Record<string, { name: string; tagline: string; features: string[] }> = {
+    'plan-dt': { name: 'Plano Treinador', tagline: 'Ideal para treinadores independentes e categorias de base', features: [
+      'Scout ao vivo com teclado rápido e controles táteis', 'Geração da súmula oficial FIVB Box Score P2',
+      'Envio de vídeos de partidas gravadas com celular', 'Criação de cards para Instagram Stories', 'Acesso ilimitado para 1 analista / treinador',
+    ] },
+    'plan-club-pro': { name: 'Plano Clube Pro e Liga', tagline: 'Para equipes da primeira divisão e comissões técnicas', features: [
+      'Tudo do Plano Treinador e mais', 'Sincronização de vídeo HD e cortes automáticos de jogadas',
+      'Prancheta tática e telestrator em fotos e vídeos', 'Assistente OPEN AI Coach com mapas de calor e telemetria',
+      'Exportação completa para arquivos .DVW (Data Volley)', 'Até 5 acessos simultâneos (estatístico, treinador e assistente)', 'Suporte prioritário por WhatsApp',
+    ] },
+    'plan-federacion': { name: 'Plano Federação e Torneio', tagline: 'Para associações, ligas regionais e clubes com várias sedes', features: [
+      'Licença completa para até 16 equipes do torneio', 'Classificação e líderes estatísticos em tempo real',
+      'Console central de supervisão para mesários', 'Treinamento virtual de scout para árbitros e apontadores',
+      'Suporte técnico dedicado 24 horas nos fins de semana',
+    ] },
+  };
 
   const handleMercadoPagoCheckout = async (plan: typeof plans[0]) => {
     if (!currentUser) {
@@ -169,7 +189,7 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6 bg-slate-950/90 backdrop-blur-md overflow-y-auto animate-fadeIn">
+    <LocalizedTree locale={locale}><div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6 bg-slate-950/90 backdrop-blur-md overflow-y-auto animate-fadeIn">
       <div className="bg-slate-900 border border-slate-700 rounded-3xl w-full max-w-5xl max-h-[94vh] overflow-y-auto p-5 sm:p-8 shadow-2xl text-white relative space-y-6">
         <button
           onClick={onClose}
@@ -180,20 +200,20 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
 
         <div className="text-center space-y-2 max-w-2xl mx-auto pt-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wide">
-            <Sparkles className="w-3.5 h-3.5" /> Suscripción Oficial OPEN VOLEY
+            <Sparkles className="w-3.5 h-3.5" /> {locale === 'pt-BR' ? 'Planos oficiais OPEN VOLEY' : 'Suscripción Oficial OPEN VOLEY'}
           </div>
           <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
-            Elige tu Plan y Activa tu Temporada
+            {locale === 'pt-BR' ? 'Escolha seu plano para a temporada' : 'Elige tu Plan y Activa tu Temporada'}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400">
-            Elegí tu plan con pago mensual en pesos o dólares.
+            {locale === 'pt-BR' ? 'Preços para o Brasil em dólares americanos (USD). Não há conversão automática para reais (BRL).' : 'Elegí tu plan con pago mensual en pesos o dólares.'}
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-          <span className="text-sm font-bold text-slate-300">Pago mensual</span>
+          <span className="text-sm font-bold text-slate-300">{t('Pago mensual')}</span>
 
-          <div className="bg-slate-950 p-1 rounded-2xl border border-slate-800 flex items-center">
+          {locale !== 'pt-BR' && <div className="bg-slate-950 p-1 rounded-2xl border border-slate-800 flex items-center">
             <button
               onClick={() => setCurrency('ARS')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${currency === 'ARS' ? 'bg-sky-500 text-slate-950 font-black shadow' : 'text-slate-400 hover:text-slate-200'}`}
@@ -206,12 +226,13 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
             >
               🌎 USD ($)
             </button>
-          </div>
+          </div>}
         </div>
 
-        {currentUser?.isAdmin && <section className="rounded-xl border border-indigo-500/50 p-4 space-y-3" aria-label="Tabla de precios Brasil"><h3 className="font-bold text-lg">Administración · Precios Brasil (USD)</h3><p className="text-sm text-slate-300">Tabla independiente. Los clientes brasileños pagan en dólares estadounidenses (USD), no en reales. Dejá un campo vacío para mostrar «Precio sob consulta».</p>{brazilPrices && <div className="grid gap-3">{[['plan-dt','Plan DT'],['plan-club-pro','Club Pro'],['plan-federacion','Federación']].map(([id,name])=><label key={id} className="flex items-center justify-between gap-3"><span>{name}</span><input type="number" min="0.01" max="1000000" step="0.01" placeholder="Sin publicar" className="w-32 bg-slate-950 border border-slate-600 rounded p-2 text-white" value={brazilPrices[id] ?? ''} onChange={e => setBrazilPrices(prev => prev ? {...prev,[id]: e.target.value === '' ? null : Number(e.target.value)} : prev)} /></label>)}</div>}<button type="button" onClick={saveBrazil} disabled={!brazilPrices} className="rounded-lg bg-indigo-500 text-white px-4 py-2">Guardar precios Brasil</button><p role="status">{brazilMessage}</p></section>}
+        {locale === 'pt-BR' && <p className="rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-100">Todos os preços desta seção são cobrados em dólares americanos (USD), não em reais (BRL). O valor em USD é o preço de referência; confirme a forma de pagamento internacional antes de contratar.</p>}
+        {currentUser?.isAdmin && <section className="rounded-xl border border-indigo-500/50 p-4 space-y-3" aria-label={locale === 'pt-BR' ? 'Tabela de preços para o Brasil' : 'Tabla de precios Brasil'}><h3 className="font-bold text-lg">{locale === 'pt-BR' ? 'Administração · Preços Brasil (USD)' : 'Administración · Precios Brasil (USD)'}</h3><p className="text-sm text-slate-300">{locale === 'pt-BR' ? 'Tabela independente. Clientes brasileiros pagam em dólares americanos (USD), não em reais. Deixe um campo vazio para exibir “Preço sob consulta”.' : 'Tabla independiente. Los clientes brasileños pagan en dólares estadounidenses (USD), no en reales. Dejá un campo vacío para mostrar «Precio sob consulta».'}</p>{brazilPrices && <div className="grid gap-3">{[['plan-dt','Plan DT'],['plan-club-pro','Club Pro'],['plan-federacion','Federação']].map(([id,name])=><label key={id} className="flex items-center justify-between gap-3"><span>{name}</span><input type="number" min="0.01" max="1000000" step="0.01" placeholder={locale === 'pt-BR' ? 'Não publicar' : 'Sin publicar'} className="w-32 bg-slate-950 border border-slate-600 rounded p-2 text-white" value={brazilPrices[id] ?? ''} onChange={e => setBrazilPrices(prev => prev ? {...prev,[id]: e.target.value === '' ? null : Number(e.target.value)} : prev)} /></label>)}</div>}<button type="button" onClick={saveBrazil} disabled={!brazilPrices} className="rounded-lg bg-indigo-500 text-white px-4 py-2">{locale === 'pt-BR' ? 'Salvar preços do Brasil' : 'Guardar precios Brasil'}</button><p role="status">{brazilMessage}</p></section>}
         {currentUser && <RecurringSubscriptionPanel onAccessUpdated={onPaymentSuccess} />}
-        {mpConfig?.subscriptionsEnabled && currency === 'ARS' && <section className="rounded-xl border border-sky-500/40 p-4 space-y-3 text-sm">
+        {locale !== 'pt-BR' && mpConfig?.subscriptionsEnabled && currency === 'ARS' && <section className="rounded-xl border border-sky-500/40 p-4 space-y-3 text-sm">
           <label className="flex gap-3 items-start"><input type="checkbox" checked={recurring} onChange={e => { setRecurring(e.target.checked); setConsent(false); }} />
             <span>Renovación mensual automática con Mercado Pago</span></label>
           {recurring && <>
@@ -225,8 +246,11 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
           {plans.map((plan) => {
             const price = catalog?.[plan.id]?.[billingCycle]?.[currency] ?? 0;
-            const displayPrice = !catalog ? 'Cargando…' : currency === 'ARS' ? `$${price.toLocaleString('es-AR')}` : `$${price}`;
-            const periodLabel = '/ mes';
+            const displayPrice = locale === 'pt-BR'
+              ? brazilPrices?.[plan.id] != null ? `US$ ${Number(brazilPrices[plan.id]).toFixed(2)}` : 'Preço sob consulta'
+              : !catalog ? 'Cargando…' : currency === 'ARS' ? `$${price.toLocaleString('es-AR')}` : `$${price}`;
+            const periodLabel = locale === 'pt-BR' ? 'por mês' : '/ mes';
+            const localizedPlan = locale === 'pt-BR' ? ptPlanContent[plan.id] : null;
             const isLoadingThis = loadingPlanId === plan.id;
 
             return (
@@ -239,8 +263,8 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
 
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-black text-white">{plan.name}</h3>
-                    <p className="text-xs text-slate-400 mt-1 min-h-[32px]">{plan.tagline}</p>
+                    <h3 className="text-lg font-black text-white">{localizedPlan?.name ?? plan.name}</h3>
+                    <p className="text-xs text-slate-400 mt-1 min-h-[32px]">{localizedPlan?.tagline ?? plan.tagline}</p>
                   </div>
 
                   <div className="py-3 border-y border-slate-800">
@@ -252,7 +276,7 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
                   </div>
 
                   <ul className="space-y-2.5 text-xs text-slate-300">
-                    {plan.features.map((feature, i) => (
+                    {(localizedPlan?.features ?? plan.features).map((feature, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         <span className="leading-snug">{feature}</span>
@@ -263,28 +287,30 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
 
                 <div className="pt-6">
                   <button
-                    onClick={() => handleMercadoPagoCheckout(plan)}
-                    disabled={!!loadingPlanId || !catalog || !mpConfig?.isConfigured || !currentUser || (recurring && !consent)}
+                    onClick={() => locale === 'pt-BR' ? setShowContactForm(true) : handleMercadoPagoCheckout(plan)}
+                    disabled={locale !== 'pt-BR' && (!!loadingPlanId || !catalog || !mpConfig?.isConfigured || !currentUser || (recurring && !consent))}
                     className={`w-full py-3 px-4 rounded-2xl font-black text-xs flex items-center justify-center gap-2.5 transition transform active:scale-95 shadow-xl ${plan.popular ? 'bg-sky-400 hover:bg-sky-300 text-slate-950 shadow-sky-400/20' : 'bg-slate-800 hover:bg-sky-500 hover:text-slate-950 text-white border border-slate-700'} disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
-                    {isLoadingThis ? (
+                    {locale === 'pt-BR' ? (
+                      <><MessageSquare className="w-4 h-4" /><span>Consultar contratação</span><ArrowRight className="w-4 h-4" /></>
+                    ) : isLoadingThis ? (
                       <><Loader2 className="w-4 h-4 animate-spin" /><span>Conectando Mercado Pago...</span></>
                     ) : (
                       <><div className="w-5 h-5 rounded-full bg-sky-500 text-slate-950 flex items-center justify-center font-extrabold text-[10px]">MP</div><span>{recurring ? 'Suscribirme mensualmente' : 'Pagar un mes con Mercado Pago'}</span><ArrowRight className="w-4 h-4" /></>
                     )}
                   </button>
 
-                  <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 mt-2">
+                  {locale !== 'pt-BR' && <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 mt-2">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Pago validado por Mercado Pago y OPEN VOLEY</span>
-                  </div>
+                  </div>}
                 </div>
               </div>
             );
           })}
         </div>
 
-        <section aria-labelledby="mp-payment-link-title" className="rounded-2xl border border-sky-500/40 bg-sky-950/30 p-5 space-y-3">
+        {locale !== 'pt-BR' && <section aria-labelledby="mp-payment-link-title" className="rounded-2xl border border-sky-500/40 bg-sky-950/30 p-5 space-y-3">
           <h3 id="mp-payment-link-title" className="text-lg font-black text-white">Pago por enlace de Mercado Pago</h3>
           <p className="text-sm text-slate-300">
             Usá esta opción para el pago acordado con administración. Confirmá el importe y el concepto que aparecen en Mercado Pago antes de pagar.
@@ -308,9 +334,9 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
           <p id="mp-payment-link-details" className="text-xs leading-relaxed text-slate-300">
             Se abre Mercado Pago en otra pestaña. OPEN VOLEY no configura un débito mensual automático con esta opción. El acceso se activa después de que administración verifique el pago; abrir el enlace no activa una licencia.
           </p>
-        </section>
+        </section>}
 
-        <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        {locale !== 'pt-BR' && <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
               <MessageSquare className="w-4 h-4" />
@@ -330,9 +356,10 @@ export const SubscriptionPlansModal: React.FC<SubscriptionPlansModalProps> = ({
             <span>Consultar por transferencia</span>
             <MessageSquare className="w-3.5 h-3.5" />
           </button>
-        </div>
-        {showContactForm && <div><p className="text-sm text-slate-300">Tu consulta quedará registrada para administración. El formulario no realiza un pago ni activa la licencia.</p><LeadRegistrationForm /></div>}
+        </div>}
+        {locale === 'pt-BR' && <section className="rounded-2xl border border-slate-700 bg-slate-950 p-5 space-y-3"><h3 className="text-lg font-bold">Fale com a equipe OPEN VOLEY</h3><p className="text-sm text-slate-300">Envie sua consulta para conhecer a contratação no Brasil. Os preços são informados em USD; o pagamento só é combinado após confirmar um meio internacional disponível.</p><button type="button" onClick={() => setShowContactForm(open => !open)} className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-bold text-white">Consultar contratação</button></section>}
+        {showContactForm && <div><p className="text-sm text-slate-300">{locale === 'pt-BR' ? 'Sua consulta será enviada para a equipe OPEN VOLEY. O formulário não realiza pagamentos nem ativa licenças.' : 'Tu consulta quedará registrada para administración. El formulario no realiza un pago ni activa la licencia.'}</p><LeadRegistrationForm locale={locale} /></div>}
       </div>
-    </div>
+    </div></LocalizedTree>
   );
 };

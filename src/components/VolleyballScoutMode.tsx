@@ -5,6 +5,7 @@ import { useScoutButtons, evaluationForKey } from '../utils/scoutButtonPreferenc
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { MatchData, ScoutLayoutPreset, Player, ScoutCodeAction, TeamSide, VolleySkill, EvaluationSymbol } from '../types';
 import { isTerminalScoutAction, nextScoutStep } from '../utils/scoutRallyAssist';
+import { AppLocale, LocalizedTree, translateUi } from '../shared/locale';
 import { 
   RotateCcw, 
   RotateCw, 
@@ -32,6 +33,7 @@ interface VolleyballScoutModeProps {
   onSelectAction?: (id: string) => void;
   onOpenPreparation?: () => void;
   onSaveScoutPreset?: (team: TeamSide, key: string, preset: ScoutLayoutPreset | null) => void;
+  locale?: AppLocale;
 }
 
 // Fundamental skills
@@ -119,7 +121,9 @@ export const VolleyballScoutMode: React.FC<VolleyballScoutModeProps> = ({
   onSelectAction,
   onOpenPreparation,
   onSaveScoutPreset,
+  locale = 'es' as AppLocale,
 }) => {
+  const t = (text: string) => translateUi(text, locale);
   // Active team being scouted
   const [activeTeam, setActiveTeam] = useState<TeamSide>('home');
   const courtView = useCourtView(typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches ? 'side' : 'back');
@@ -449,12 +453,13 @@ export const VolleyballScoutMode: React.FC<VolleyballScoutModeProps> = ({
 
   // Current outcomes available for the selected skill
   const currentOutcomes = [...(SKILL_OUTCOMES[stagedSkill] || SKILL_OUTCOMES.A)]
-    .sort((a, b) => scoutButtons.order.indexOf(a.symbol) - scoutButtons.order.indexOf(b.symbol));
+    .sort((a, b) => scoutButtons.order.indexOf(a.symbol) - scoutButtons.order.indexOf(b.symbol))
+    .map((option) => ({ ...option, label: t(option.label), sublabel: t(option.sublabel) }));
 
-  if (compactView) return <CompactScoutPanel match={match} activeTeam={activeTeam} selectedPlayer={selectedPlayer} skill={stagedSkill} outcomes={currentOutcomes} onPlayer={selectScoutPlayer} onSkill={setStagedSkill} onEvaluate={handleCommitAction} onUndo={handleUndo} onClose={() => setCompactView(false)} confirmation={quickConfirmation} onFormation={onOpenPreparation} onSaveScoutPreset={onSaveScoutPreset} {...courtView} />;
+  if (compactView) return <LocalizedTree locale={locale}><CompactScoutPanel match={match} activeTeam={activeTeam} selectedPlayer={selectedPlayer} skill={stagedSkill} outcomes={currentOutcomes} onPlayer={selectScoutPlayer} onSkill={setStagedSkill} onEvaluate={handleCommitAction} onUndo={handleUndo} onClose={() => setCompactView(false)} confirmation={quickConfirmation} onFormation={onOpenPreparation} onSaveScoutPreset={onSaveScoutPreset} {...courtView} /></LocalizedTree>;
 
   return (
-    <>
+    <LocalizedTree locale={locale}><>
     <button type="button" onClick={() => setCompactView(true)} className="min-h-11 rounded-xl bg-amber-500 px-4 py-2 text-xs font-bold text-slate-950">Scout simple · Pantalla completa</button>
     <div className="space-y-4 select-none animate-fadeIn">
       {/* EPHEMERAL QUICK TOAST CONFIRMATION (Disappears in 1.2s without requiring 'Aceptar') */}
@@ -862,7 +867,7 @@ export const VolleyballScoutMode: React.FC<VolleyballScoutModeProps> = ({
                     }`}
                   >
                     <span className="text-lg sm:text-2xl leading-none">{skill.icon}</span>
-                    <span className="tracking-tight">{skill.label}</span>
+                    <span className="tracking-tight">{t(skill.label)}</span>
                     <span className={`hidden sm:inline text-[10px] font-mono ${isActive ? 'text-slate-900 font-extrabold' : 'text-slate-500'}`}>
                       ({skill.key})
                     </span>
@@ -978,6 +983,6 @@ export const VolleyballScoutMode: React.FC<VolleyballScoutModeProps> = ({
       </div>
 
     </div>
-    </>
+    </></LocalizedTree>
   );
 };

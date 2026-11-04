@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import { userStorage } from '../services/userStorage';
 import React, { useState } from 'react';
 import { MatchData, TeamSide, PlayerStats } from '../types';
@@ -161,7 +162,7 @@ export const BoxScoreReport: React.FC<BoxScoreReportProps> = ({
   };
 
   return (
-    <div className="bg-white p-3 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 sm:space-y-5">
+    <LocalizedTree locale={getStoredLocale()}><div className="bg-white p-3 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 sm:space-y-5">
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
@@ -483,6 +484,6 @@ export const BoxScoreReport: React.FC<BoxScoreReportProps> = ({
         <div>• <strong>Eficiencia de Ataque (Efic %):</strong> ((Puntos - Errores - Ataques Bloqueados) / Total de Ataques) × 100</div>
         <div>• <strong>Recepción Positiva (Pos %):</strong> ((Pases Perfectos [#] + Pases Positivos [+]) / Total de Recepciones) × 100</div>
       </div>
-    </div>
+    </div></LocalizedTree>
   );
 };

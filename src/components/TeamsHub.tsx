@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import {LegacyRecoveryPanel} from './LegacyRecoveryPanel';
 import React, { useState } from 'react';
 import { 
@@ -203,7 +204,7 @@ export const TeamsHub: React.FC<TeamsHubProps> = ({
   };
 
   return (
-    <div className="space-y-3 sm:space-y-6 animate-in fade-in duration-200">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-3 sm:space-y-6 animate-in fade-in duration-200">
       
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-6 shadow-xl">
@@ -805,6 +806,6 @@ export const TeamsHub: React.FC<TeamsHubProps> = ({
         </div>
       )}
 
-    </div>
+    </div></LocalizedTree>
   );
 };

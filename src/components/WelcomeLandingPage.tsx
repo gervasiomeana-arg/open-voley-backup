@@ -3,10 +3,13 @@ import { ArrowRight, ArrowUpRight, Volleyball, Check, BarChart3, Video, Clipboar
 import { LeadRegistrationForm } from './LeadRegistrationForm';
 import './welcomeLanding.css';
 import { LandingScoutIllustration } from './LandingScoutIllustration';
+import { AppLocale } from '../shared/locale';
 interface WelcomeLandingPageProps {
     onStartFreeTrial: () => void;
     onClientLogin: () => void;
     onOpenPlansModal: () => void;
+    locale: AppLocale;
+    onLocaleChange: (locale: AppLocale) => void;
 }
 const ptBR: Record<string, string> = {
   "Planes": "Planos",
@@ -133,7 +136,7 @@ function ProductIllustration({ step, locale }: {
    <div className="ov-product-bottom"><span>{t(steps[step].label)}</span><span>{t("Datos de ejemplo · No es un partido en vivo")}</span></div>
  </div>;
 }
-export const WelcomeLandingPage: React.FC<WelcomeLandingPageProps> = ({ onStartFreeTrial, onClientLogin, onOpenPlansModal }) => {
+export const WelcomeLandingPage: React.FC<WelcomeLandingPageProps> = ({ onStartFreeTrial, onClientLogin, onOpenPlansModal, locale, onLocaleChange }) => {
     const landingRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
       if (!landingRef.current || !('IntersectionObserver' in window)) return;
@@ -147,20 +150,14 @@ export const WelcomeLandingPage: React.FC<WelcomeLandingPageProps> = ({ onStartF
       sections.forEach(el => { el.classList.add('ov-reveal-ready'); observer.observe(el); });
       return () => { observer.disconnect(); sections.forEach(el => el.classList.remove('ov-reveal-ready')); };
     }, []);
-    const [locale, setLocale] = useState<'es' | 'pt-BR'>(() => {
-      if (typeof window === 'undefined') return 'es';
-      const query = new URLSearchParams(window.location.search).get('lang');
-      return query === 'pt-BR' || query === 'pt' ? 'pt-BR' : (window.localStorage.getItem('openvoley_public_locale') === 'pt-BR' ? 'pt-BR' : 'es');
-    });
     const t = (text: string) => translate(text, locale);
-    useEffect(() => { window.localStorage.setItem('openvoley_public_locale', locale); document.documentElement.lang = locale; }, [locale]);
     const [brazilPrices, setBrazilPrices] = useState<Record<string, number | null> | null>(null);
     useEffect(() => { if (locale === 'pt-BR') fetch('/api/commercial/brazil-prices').then(r => r.ok ? r.json() : Promise.reject()).then(d => setBrazilPrices(d.prices)).catch(() => setBrazilPrices(null)); }, [locale]);
     const [step, setStep] = useState(0), [openQuestion, setOpenQuestion] = useState<number | null>(0);
     useEffect(() => { void fetch('/api/visitors/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ domain: window.location.hostname, page: window.location.pathname, deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Móvil' : 'PC / Laptop', action: 'Visita Landing Oficial' }) }).catch(() => { }); }, []);
     return <div ref={landingRef} className="ov-landing">
   <a href="#contenido" className="ov-skip">{t("Ir al contenido")}</a>
-  <header className="ov-header"><div className="ov-container ov-nav"><a className="ov-brand" href="#inicio" aria-label="OPEN VOLEY, inicio"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><nav aria-label="Navegación principal"><a href="#herramientas">{t("La plataforma")}</a><a href="#como-funciona">{t("Cómo funciona")}</a><button onClick={onOpenPlansModal}>{t("Planes y precios")}</button></nav><div className="ov-nav-actions"><select aria-label="Idioma / Idioma" value={locale} onChange={e => setLocale(e.target.value as 'es' | 'pt-BR')} style={{maxWidth:110, borderRadius:8, padding:6, background:"transparent", color:"inherit"}}><option value="es" style={{ color: "#101828", backgroundColor: "#ffffff" }}>Español</option><option value="pt-BR" style={{ color: "#101828", backgroundColor: "#ffffff" }}>Português BR</option></select><button className="ov-mobile-plans" onClick={onOpenPlansModal}>{t('Planes')}</button><button className="ov-login" onClick={onClientLogin}>{t("Ingresar")} <ArrowUpRight size={16}/></button><button className="ov-nav-trial" onClick={onStartFreeTrial}>{t("Probar gratis")}</button></div></div></header>
+  <header className="ov-header"><div className="ov-container ov-nav"><a className="ov-brand" href="#inicio" aria-label="OPEN VOLEY, inicio"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><nav aria-label="Navegación principal"><a href="#herramientas">{t("La plataforma")}</a><a href="#como-funciona">{t("Cómo funciona")}</a><button onClick={onOpenPlansModal}>{t("Planes y precios")}</button></nav><div className="ov-nav-actions"><select aria-label="Idioma / Idioma" value={locale} onChange={e => onLocaleChange(e.target.value as AppLocale)} style={{maxWidth:110, borderRadius:8, padding:6, background:"transparent", color:"inherit"}}><option value="es" style={{ color: "#101828", backgroundColor: "#ffffff" }}>Español</option><option value="pt-BR" style={{ color: "#101828", backgroundColor: "#ffffff" }}>Português BR</option></select><button className="ov-mobile-plans" onClick={onOpenPlansModal}>{t('Planes')}</button><button className="ov-login" onClick={onClientLogin}>{t("Ingresar")} <ArrowUpRight size={16}/></button><button className="ov-nav-trial" onClick={onStartFreeTrial}>{t("Probar gratis")}</button></div></div></header>
   <main id="contenido">
    <div className="ov-hero-wrap"><img className="ov-hero-backdrop" src="/media/volley-hero.webp" width="1600" height="900" alt="" aria-hidden="true" fetchPriority="high"/><section id="inicio" className="ov-hero ov-container"><div className="ov-hero-copy"><h1>{t("Leé el partido.")}<br /><span>{t("Decidí mejor.")}</span></h1><p className="ov-hero-description">{t("Scouting, análisis y entrenamiento de vóley, conectados.")}</p><div className="ov-hero-actions"><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>{t("Probar OPEN VOLEY")} <ArrowUpRight size={19}/></button><a className="ov-text-link" href="#como-funciona">{t("Ver cómo funciona")} <ArrowRight size={17}/></a></div><p className="ov-trial-note">{t("7 días gratis · Sin tarjeta")}</p></div><div className="ov-hero-visual"><div className="ov-laptop"><LandingScoutIllustration /></div></div></section></div>
    <div className="ov-platform-strip"><div className="ov-container"><span>{t("Tu trabajo técnico,")}<br /><strong>{t("conectado.")}</strong></span><p>{t('Partido')} <ArrowRight /> Scout <ArrowRight /> {t('Análisis')} <ArrowRight /> {t('Vídeo')} <ArrowRight /> {t('Entrenamiento')}</p></div></div>

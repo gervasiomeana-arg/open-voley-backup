@@ -1,6 +1,10 @@
+Warning: truncated output (original token count: 20680)
+Total output lines: 1957
+
 import { saveScoutPreset } from './utils/scoutCourtLayout';
 import {UserDataStoragePanel} from './components/UserDataStoragePanel';
 import { userStorage } from './services/userStorage';
+import { AppLocale, getStoredLocale, translateUi } from './shared/locale';
 import { TacticalWhiteboard } from './components/TacticalWhiteboard';
 import React, { useState, useEffect } from 'react';
 import { applyRallyWinner, pointWinnerFromAction, rotateClockwise } from './utils/matchRotationEngine';
@@ -84,6 +88,17 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  const [locale, setLocale] = useState<AppLocale>(() => {
+    if (typeof window === 'undefined') return 'es';
+    const query = new URLSearchParams(window.location.search).get('lang');
+    return query === 'pt' || query === 'pt-BR' ? 'pt-BR' : getStoredLocale();
+  });
+  const t = (text: string) => translateUi(text, locale);
+  const changeLocale = (nextLocale: AppLocale) => {
+    window.localStorage.setItem('openvoley_public_locale', nextLocale);
+    document.documentElement.lang = nextLocale;
+    setLocale(nextLocale);
+  };
   const [activeTab, setActiveTab] = useState<TabType>('home');
   const [matchesSubTab, setMatchesSubTab] = useState<'center' | 'scout' | 'boxscore' | 'info' | 'whiteboard'>('center');
   const [teamsSubTab, setTeamsSubTab] = useState<'rosters' | 'training'>('rosters');
@@ -120,6 +135,11 @@ export default function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isExistingClientMode, setIsExistingClientMode] = useState(false);
   const [paymentSuccessToast, setPaymentSuccessToast] = useState<{ message: string; planName?: string } | null>(null);
+
+  useEffect(() => {
+    window.localStorage.setItem('openvoley_public_locale', locale);
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   // Workflow Modals State
   const [isTeamsModalOpen, setIsTeamsModalOpen] = useState(false);
@@ -907,52 +927,52 @@ export default function App() {
   // Tab Titles map for top bar
   const tabTitles: Record<TabType, { title: string; subtitle: string; icon: any; color: string }> = {
     home: {
-      title: '1. Inicio',
-      subtitle: 'Panel central de partido activo, accesos directos y estado de la plataforma',
+      title: t('1. Inicio'),
+      subtitle: t('Panel central de partido activo, accesos directos y estado de la plataforma'),
       icon: Home,
       color: 'text-amber-400',
     },
     team: {
-      title: '2. Equipo & Planteles',
-      subtitle: 'Gestión de planteles propios, clubes rivales, fichas Player 360° y entrenamientos',
+      title: t('2. Equipo & Planteles'),
+      subtitle: t('Gestión de planteles propios, clubes rivales, fichas Player 360° y entrenamientos'),
       icon: Users,
       color: 'text-cyan-400',
     },
     competition: {
-      title: '3. Competición',
-      subtitle: 'Gestión de torneos, fixtures de partidos, sedes y tablas oficiales de posiciones',
+      title: t('3. Competición'),
+      subtitle: t('Gestión de torneos, fixtures de partidos, sedes y tablas oficiales de posiciones'),
       icon: Trophy,
       color: 'text-amber-400',
     },
     match: {
-      title: matchesSubTab === 'center' ? '4. Centro del Partido' : '4. Partido',
+      title: matchesSubTab === 'center' ? t('4. Centro del Partido') : t('4. Partido'),
       subtitle: matchesSubTab === 'center'
         ? `${match.homeTeamName} vs ${match.awayTeamName} • Hub de mando, scouting en vivo, video, estadísticas e IA`
-        : 'Cancha 2D táctica, consola de scouting en vivo, planilla estadística e información',
+        : t('Cancha 2D táctica, consola de scouting en vivo, planilla estadística e información'),
       icon: Volleyball,
       color: 'text-orange-400',
     },
     analysis: {
-      title: '5. Análisis & Video',
-      subtitle: 'Análisis por equipo, distribución de armador, saque y video sincronizado',
+      title: t('5. Análisis & Video'),
+      subtitle: t('Análisis por equipo, distribución de armador, saque y video sincronizado'),
       icon: TrendingUp,
       color: 'text-emerald-400',
     },
     ai: {
-      title: '6. OPEN AI Coach',
-      subtitle: 'Asistente sobre datos registrados y herramientas experimentales de video',
+      title: t('6. OPEN AI Coach'),
+      subtitle: t('Asistente sobre datos registrados y herramientas experimentales de video'),
       icon: Sparkles,
       color: 'text-purple-400',
     },
     'my-videos': {
-      title: '7. Mis Videos',
-      subtitle: 'Montajes y devoluciones técnicas publicados específicamente para tu cuenta',
+      title: t('7. Mis Videos'),
+      subtitle: t('Montajes y devoluciones técnicas publicados específicamente para tu cuenta'),
       icon: Inbox,
       color: 'text-red-400',
     },
     settings: {
-      title: '8. Configuración',
-      subtitle: 'Preferencias de scouting, exportaciones oficiales .DVW, respaldos y cuenta',
+      title: t('8. Configuración'),
+      subtitle: t('Preferencias de scouting, exportaciones oficiales .DVW, respaldos y cuenta'),
       icon: Settings,
       color: 'text-emerald-400',
     },
@@ -962,9 +982,9 @@ export default function App() {
   const CurrentTabIcon = currentTabMeta.icon;
 
   const mobileNavItems: Array<{ id: TabType; label: string; icon: any }> = [
-    { id: 'home', label: 'Inicio', icon: Home },
-    { id: 'match', label: 'Partido', icon: Volleyball },
-    { id: 'analysis', label: 'Análisis', icon: TrendingUp },
+    { id: 'home', label: t('Inicio'), icon: Home },
+    { id: 'match', label: t('Partido'), icon: Volleyball },
+    { id: 'analysis', label: t('Análisis'), icon: TrendingUp },
     { id: 'ai', label: 'OPEN AI', icon: Sparkles },
     { id: 'my-videos', label: 'Videos', icon: Inbox },
   ];
@@ -976,6 +996,8 @@ export default function App() {
     return (
       <>
         <WelcomeLandingPage
+          locale={locale}
+          onLocaleChange={changeLocale}
           onStartFreeTrial={() => {
             setIsExistingClientMode(false);
             setShowAuthModal(true);
@@ -993,6 +1015,7 @@ export default function App() {
             onLoginSuccess={handleLoginSuccess}
             onClose={() => setShowAuthModal(false)}
             isExistingClientLogin={isExistingClientMode}
+            locale={locale}
           />
         )}
 
@@ -1002,6 +1025,7 @@ export default function App() {
           onClose={() => setIsPlansModalOpen(false)}
           currentUser={currentUser}
           trialInfo={trialInfo}
+          locale={locale}
         />
       </>
     );
@@ -1030,64 +1054,13 @@ export default function App() {
         onOpenNewMatch={() => setIsNewMatchModalOpen(true)}
         onOpenQuickAction={() => setIsQuickActionModalOpen(true)}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        locale={locale}
+        onLocaleChange={changeLocale}
       />
 
-      {/* Main Content Area Wrapper - Adjusts with Sidebar width */}
-      <div
-        className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
-          isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60'
-        }`}
-      >
-        <UserDataStoragePanel/>
-        {/* Floating Toast Notification */}
-        {floatingToast && (
-          <div className="fixed top-4 right-4 z-50 bg-slate-900 border border-amber-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300">
-            <div className="p-1.5 bg-amber-500/20 text-amber-400 rounded-xl shrink-0">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="font-bold text-xs text-amber-400">{floatingToast.title}</div>
-              {floatingToast.subtitle && (
-                <div className="text-[11px] text-slate-300">{floatingToast.subtitle}</div>
-              )}
-            </div>
-            <button
-              onClick={() => setFloatingToast(null)}
-              className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white text-xs ml-2 cursor-pointer"
-            >
-              ✕
-            </button>
-          </div>
-        )}
-
-        {/* Payment Success Floating Toast Notification */}
-        {paymentSuccessToast && (
-          <div className="fixed top-4 right-4 z-50 bg-emerald-500 text-slate-950 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-300 animate-bounce">
-            <CheckCircle2 className="w-5 h-5 text-slate-950 shrink-0" />
-            <div>
-              <div className="font-black text-xs uppercase tracking-wide">¡Pago de Mercado Pago Aprobado!</div>
-              <div className="text-xs font-medium">{paymentSuccessToast.message}</div>
-            </div>
-            <button
-              onClick={() => setPaymentSuccessToast(null)}
-              className="p-1 hover:bg-emerald-600 rounded-lg text-slate-950 font-black ml-2"
-            >
-              ✕
-            </button>
-          </div>
-        )}
-
-        {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-md">
-          <div className="px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-3 sm:gap-4">
-            
-            {/* Left: Mobile Toggle & Current View Breadcrumb */}
-            <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
-              <button
-                onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 active:scale-95 border border-slate-700 transition min-w-[40px] min-h-[40px] flex items-center justify-center"
-                title="Abrir menú completo de navegación"
-                aria-label="Abrir menú lateral"
+      {/* Main Content Area Wrapper -…680 tokens truncated…-200 active:scale-95 border border-slate-700 transition min-w-[40px] min-h-[40px] flex items-center justify-center"
+                title={t('Abrir menú completo de navegación')}
+                aria-label={t('Abrir menú lateral')}
               >
                 <Menu className="w-5 h-5" />
               </button>
@@ -1124,20 +1097,20 @@ export default function App() {
               <button
                 onClick={() => setIsNewMatchModalOpen(true)}
                 className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs w-10 h-10 sm:w-auto sm:h-auto sm:px-3 sm:py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition cursor-pointer"
-                title="Configurar y arrancar un nuevo partido"
+                title={t('Configurar y arrancar un nuevo partido')}
               >
                 <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">+ Nuevo Partido</span>
+                <span className="hidden sm:inline">+ {t('Nuevo Partido')}</span>
               </button>
 
               {/* Botón de Ayuda */}
               <button
                 onClick={() => setIsQuickGuideOpen(true)}
                 className="hidden sm:flex bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white font-black text-xs px-3 py-2 rounded-xl items-center gap-1.5 border border-indigo-500/50 shadow-sm transition cursor-pointer"
-                title="¿Cómo funciona? Guía y ayuda interactiva"
+                title={t('¿Cómo funciona? Guía y ayuda interactiva')}
               >
                 <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-300" />
-                <span className="hidden sm:inline">Ayuda</span>
+                <span className="hidden sm:inline">{t('Ayuda')}</span>
               </button>
             </div>
           </div>
@@ -1167,10 +1140,10 @@ export default function App() {
               <button
                 onClick={handleBackToMatchCenter}
                 className="bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-white font-black text-xs p-2 sm:px-3 sm:py-1.5 rounded-xl border border-amber-500/30 flex items-center gap-1.5 transition cursor-pointer shadow-sm"
-                title="Volver a la pantalla principal del Centro del Partido"
+                title={t('Volver a la pantalla principal del Centro del Partido')}
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">← Centro del Partido</span>
+                <span className="hidden sm:inline">← {t('Centro del Partido')}</span>
               </button>
 
               {!(activeTab === 'match' && matchesSubTab === 'scout') && (
@@ -1195,6 +1168,7 @@ export default function App() {
           {/* TAB 1: INICIO */}
           {activeTab === 'home' && (
             <HomeDashboard
+              locale={locale}
               match={match}
               savedMatches={savedMatches}
               savedTeams={savedTeams}
@@ -1250,7 +1224,7 @@ export default function App() {
                     }`}
                   >
                     <Volleyball className="w-4 h-4" />
-                    <span className="hidden sm:inline">Centro del Partido</span><span className="sm:hidden">Centro</span>
+                    <span className="hidden sm:inline">{t('Centro del Partido')}</span><span className="sm:hidden">{t('Centro')}</span>
                   </button>
 
                   <button
@@ -1268,7 +1242,7 @@ export default function App() {
                   <button
                     onClick={() => setMatchesSubTab('whiteboard')}
                     className={`px-3.5 py-2 rounded-xl text-xs font-black transition shrink-0 ${matchesSubTab === 'whiteboard' ? 'bg-amber-500 text-slate-950' : 'text-slate-300 hover:bg-slate-800'}`}
-                  >Pizarra</button>
+                  >{t('Pizarra')}</button>
 
                   <button
                     onClick={() => setMatchesSubTab('boxscore')}
@@ -1279,7 +1253,7 @@ export default function App() {
                     }`}
                   >
                     <BarChart2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Planilla estadística</span><span className="sm:hidden">Planilla</span>
+                    <span className="hidden sm:inline">{t('Planilla estadística')}</span><span className="sm:hidden">{t('Planilla')}</span>
                   </button>
 
                   <button
@@ -1291,7 +1265,7 @@ export default function App() {
                     }`}
                   >
                     <FolderKanban className="w-4 h-4" />
-                    <span className="hidden sm:inline">Información & Historial</span><span className="sm:hidden">Historial</span>
+                    <span className="hidden sm:inline">{t('Información & Historial')}</span><span className="sm:hidden">{t('Historial')}</span>
                   </button>
                 </div>
 
@@ -1302,7 +1276,7 @@ export default function App() {
                     title="Guardar partido en historial"
                   >
                     <Save className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Guardar Partido</span>
+                    <span>{t('Guardar Partido')}</span>
                   </button>
 
                   <button
@@ -1310,7 +1284,7 @@ export default function App() {
                     className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl shadow-md shadow-amber-500/20 transition flex items-center gap-1.5"
                   >
                     <PlusCircle className="w-3.5 h-3.5" />
-                    <span>Nuevo Partido</span>
+                    <span>{t('Nuevo Partido')}</span>
                   </button>
                 </div>
               </div>
@@ -1335,6 +1309,7 @@ export default function App() {
               {matchesSubTab === 'scout' && (
                 <UnifiedTacticalHub
                   key={match.id}
+                  locale={locale}
                   match={match}
                   onAddAction={handleAddAction}
                   onDeleteAction={handleDeleteAction}
@@ -1377,7 +1352,7 @@ export default function App() {
                   <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                       <div>
-                        <div className="text-xs font-black text-amber-400 uppercase tracking-wider">Partido Activo</div>
+                        <div className="text-xs font-black text-amber-400 uppercase tracking-wider">{t('Partido Activo')}</div>
                         <h3 className="text-2xl font-black text-white">{match.homeTeamName} vs {match.awayTeamName}</h3>
                         <p className="text-xs text-slate-400">{match.competition} • {match.category} • Fecha: {match.date}</p>
                       </div>
@@ -1388,36 +1363,36 @@ export default function App() {
                           className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-amber-500/20 flex items-center gap-2 transition"
                         >
                           <Play className="w-4 h-4 fill-current" />
-                          <span>Ir al Scouting en Cancha</span>
+                          <span>{t('Ir al Scouting en Cancha')}</span>
                         </button>
                         <button
                           onClick={() => setIsExportModalOpen(true)}
                           className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-2 transition"
                         >
                           <Download className="w-4 h-4" />
-                          <span>Exportar .DVW</span>
+                          <span>{t('Exportar .DVW')}</span>
                         </button>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                       <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/60">
-                        <div className="text-[11px] text-slate-400 font-bold uppercase">Marcador de Sets</div>
+                        <div className="text-[11px] text-slate-400 font-bold uppercase">{t('Marcador de Sets')}</div>
                         <div className="text-2xl font-black text-amber-400 font-mono mt-1">{homeSetsWon} - {awaySetsWon}</div>
                       </div>
 
                       <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/60">
-                        <div className="text-[11px] text-slate-400 font-bold uppercase">Set Actual</div>
+                        <div className="text-[11px] text-slate-400 font-bold uppercase">{t('Set Actual')}</div>
                         <div className="text-2xl font-black text-white font-mono mt-1">Set {match.currentSet}</div>
                       </div>
 
                       <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/60">
-                        <div className="text-[11px] text-slate-400 font-bold uppercase">Puntos del Set</div>
+                        <div className="text-[11px] text-slate-400 font-bold uppercase">{t('Puntos del Set')}</div>
                         <div className="text-2xl font-black text-white font-mono mt-1">{currentSetData.scoreHome} - {currentSetData.scoreAway}</div>
                       </div>
 
                       <div className="p-4 bg-slate-800/50 rounded-2xl border border-slate-700/60">
-                        <div className="text-[11px] text-slate-400 font-bold uppercase">Jugadas Registradas</div>
+                        <div className="text-[11px] text-slate-400 font-bold uppercase">{t('Jugadas Registradas')}</div>
                         <div className="text-2xl font-black text-cyan-400 font-mono mt-1">{match.actions?.length || 0}</div>
                       </div>
                     </div>
@@ -1428,13 +1403,13 @@ export default function App() {
                     <div className="flex items-center justify-between">
                       <h4 className="text-base font-black text-white flex items-center gap-2">
                         <FolderKanban className="w-5 h-5 text-amber-400" />
-                        <span>Historial de Partidos Guardados</span>
+                        <span>{t('Historial de Partidos Guardados')}</span>
                       </h4>
                       <button
                         onClick={() => setIsSavedMatchesModalOpen(true)}
                         className="text-xs text-amber-400 font-bold hover:underline"
                       >
-                        Abrir gestor completo ({savedMatches.length})
+                        {t('Abrir gestor completo')} ({savedMatches.length})
                       </button>
                     </div>
 
@@ -1458,7 +1433,7 @@ export default function App() {
                             className="w-full mt-2 bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 font-bold text-xs py-2 rounded-xl border border-amber-500/30 transition flex items-center justify-center gap-1.5"
                           >
                             <Play className="w-3 h-3 fill-current" />
-                            <span>Cargar este Partido</span>
+                            <span>{t('Cargar este Partido')}</span>
                           </button>
                         </div>
                       ))}
@@ -1483,7 +1458,7 @@ export default function App() {
                     }`}
                   >
                     <Users className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Planteles & Jugadores</span><span className="sm:hidden">Plantel</span>
+                    <span className="hidden sm:inline">{t('Planteles & Jugadores')}</span><span className="sm:hidden">{t('Plantel')}</span>
                   </button>
                   <button
                     onClick={() => setTeamsSubTab('training')}
@@ -1494,7 +1469,7 @@ export default function App() {
                     }`}
                   >
                     <Dumbbell className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Entrenamientos & Ejercicios</span><span className="sm:hidden">Entrenar</span>
+                    <span className="hidden sm:inline">{t('Entrenamientos & Ejercicios')}</span><span className="sm:hidden">{t('Entrenar')}</span>
                     {trainingFocusProblem && (
                       <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
                     )}
@@ -1555,7 +1530,7 @@ export default function App() {
                     }`}
                   >
                     <TrendingUp className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Informes tácticos</span><span className="sm:hidden">Informes</span>
+                    <span className="hidden sm:inline">{t('Informes tácticos')}</span><span className="sm:hidden">{t('Informes')}</span>
                   </button>
                   <button
                     onClick={() => setAnalysisSubTab('video')}
@@ -1566,7 +1541,7 @@ export default function App() {
                     }`}
                   >
                     <Video className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Video Sincronizado & Cortes</span><span className="sm:hidden">Video</span>
+                    <span className="hidden sm:inline">{t('Video Sincronizado & Cortes')}</span><span className="sm:hidden">{t('Video')}</span>
                     {userCuts.length > 0 && (
                       <span className="px-1.5 py-0.2 bg-emerald-950/70 text-emerald-300 rounded text-[10px] font-mono">
                         {userCuts.length}
@@ -1615,7 +1590,7 @@ export default function App() {
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">OPEN AI Coach & Asistente</span><span className="sm:hidden">Coach</span>
+                    <span className="hidden sm:inline">{t('OPEN AI Coach & Asistente')}</span><span className="sm:hidden">Coach</span>
                   </button>
                   <button
                     onClick={() => setAiSubTab('telemetry')}
@@ -1626,7 +1601,7 @@ export default function App() {
                     }`}
                   >
                     <Activity className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Visión Artificial & Telemetría</span><span className="sm:hidden">Telemetría</span>
+                    <span className="hidden sm:inline">{t('Visión Artificial & Telemetría')}</span><span className="sm:hidden">{t('Telemetría')}</span>
                     {aiRallies.length > 0 && (
                       <span className="px-1.5 py-0.2 bg-purple-950 text-purple-300 rounded text-[10px] font-mono">
                         {aiRallies.length} rallies
@@ -1779,6 +1754,7 @@ export default function App() {
         onClose={() => setIsPlansModalOpen(false)}
         currentUser={currentUser}
         trialInfo={trialInfo}
+        locale={locale}
         onPaymentSuccess={(updatedUser, updatedTrial) => {
           setCurrentUser(updatedUser);
           setTrialInfo(updatedTrial);

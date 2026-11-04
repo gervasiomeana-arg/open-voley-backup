@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import React, { useState, useRef, useEffect, ChangeEvent } from 'react';
 import { ScoutCodeAction, VolleySkill, EvaluationSymbol, MatchData, SmartSportsMontage } from '../types';
 import { VolleyballMediaStudio } from './VolleyballMediaStudio';
@@ -653,7 +654,7 @@ export const VideoSyncPlayer: React.FC<VideoSyncPlayerProps> = ({
   };
 
   return (
-    <div className="space-y-3 sm:space-y-6">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-3 sm:space-y-6">
       
       {/* MEDIA MODE SWITCHER BAR */}
       <div className="bg-slate-900 p-2 rounded-2xl sm:rounded-3xl border border-slate-800 shadow-xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-3">
@@ -1356,7 +1357,7 @@ export const VideoSyncPlayer: React.FC<VideoSyncPlayerProps> = ({
       </div>
       </div>
       </div>
-    </div>
+    </div></LocalizedTree>
   );
 };
 

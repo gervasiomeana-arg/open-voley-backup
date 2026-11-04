@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import React, { useMemo, useState } from 'react';
 import { MatchData, ScoutCodeAction, TeamSide } from '../types';
 import { calculatePlayerStats } from '../utils/codeParser';
@@ -171,7 +172,7 @@ export const MatchCenter: React.FC<MatchCenterProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto animate-fadeIn select-none pb-8">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-6 max-w-6xl mx-auto animate-fadeIn select-none pb-8">
 
       {/* =========================================================
           0. INDICADOR DE PROGRESO DEL PARTIDO (Secuencia Lineal)
@@ -826,6 +827,6 @@ export const MatchCenter: React.FC<MatchCenterProps> = ({
         </div>
       </div>
 
-    </div>
+    </div></LocalizedTree>
   );
 };

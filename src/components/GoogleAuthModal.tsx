@@ -1,9 +1,11 @@
 import React, {useEffect,useRef,useState} from 'react';
 import {ClientUser,TrialInfo} from '../types';
 import {getAuthenticatedSession} from '../services/authSession';
-interface Props {onLoginSuccess:(user:ClientUser,trial:TrialInfo)=>void;onClose?:()=>void;isExistingClientLogin?:boolean}
+import {AppLocale, translateUi} from '../shared/locale';
+interface Props {onLoginSuccess:(user:ClientUser,trial:TrialInfo)=>void;onClose?:()=>void;isExistingClientLogin?:boolean;locale?:AppLocale}
 declare global {interface Window {google?:any}}
-export const GoogleAuthModal:React.FC<Props>=({onLoginSuccess,onClose})=>{
+export const GoogleAuthModal:React.FC<Props>=({onLoginSuccess,onClose,locale='es' as AppLocale})=>{
+ const t=(text:string)=>translateUi(text,locale);
  const loginSuccess=useRef(onLoginSuccess);loginSuccess.current=onLoginSuccess;
  const button=useRef<HTMLDivElement>(null);const [error,setError]=useState('');const [busy,setBusy]=useState(false);
  useEffect(()=>{
@@ -32,11 +34,11 @@ export const GoogleAuthModal:React.FC<Props>=({onLoginSuccess,onClose})=>{
   return()=>{cancelled=true;window.clearInterval(timer);window.clearTimeout(timeout)};
  },[]);
  return <div className="fixed inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4"><section className="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl p-6 space-y-5 text-white">
- {onClose&&<button onClick={onClose} className="float-right p-2" aria-label="Cerrar">✕</button>}
- <h2 className="text-2xl font-bold">Ingresar a OPEN VOLEY</h2><p>Usá tu cuenta de Google. Las cuentas nuevas reciben 7 días de prueba.</p>
- <div ref={button} className={busy?'opacity-50 pointer-events-none':''}/>{busy&&<p>Verificando cuenta…</p>}{error&&<p role="alert" className="text-rose-300">{error}</p>}
- <a href="/ingresar" className="block min-h-11 rounded-lg border border-slate-500 bg-slate-800 px-3 py-3 text-center text-sm font-bold text-white">Ingresar sin ventana emergente</a>
- <p className="text-xs text-slate-300">Si el botón de Google no abre, usá esta alternativa para continuar en la misma ventana.</p>
+ {onClose&&<button onClick={onClose} className="float-right p-2" aria-label={t('Cerrar')}>✕</button>}
+ <h2 className="text-2xl font-bold">{t('Ingresar a OPEN VOLEY')}</h2><p>{t('Usá tu cuenta de Google. Las cuentas nuevas reciben 7 días de prueba.')}</p>
+ <div ref={button} className={busy?'opacity-50 pointer-events-none':''}/>{busy&&<p>{t('Verificando cuenta…')}</p>}{error&&<p role="alert" className="text-rose-300">{t(error)}</p>}
+ <a href="/ingresar" className="block min-h-11 rounded-lg border border-slate-500 bg-slate-800 px-3 py-3 text-center text-sm font-bold text-white">{t('Ingresar sin ventana emergente')}</a>
+ <p className="text-xs text-slate-300">{t('Si el botón de Google no abre, usá esta alternativa para continuar en la misma ventana.')}</p>
  <p className="text-sm text-slate-400">Al registrarte guardamos tu nombre, correo y fechas de acceso para administrar tu cuenta y la prueba.</p>
  </section></div>;
 };

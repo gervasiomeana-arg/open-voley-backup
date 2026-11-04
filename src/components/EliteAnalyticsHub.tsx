@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import React, { useState, useMemo } from 'react';
 import { MatchData, TeamSide, ScoutCodeAction } from '../types';
 import { matchRecordingStatus } from '../utils/matchRecording';
@@ -186,7 +187,7 @@ export const EliteAnalyticsHub: React.FC<EliteAnalyticsHubProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-6">
       {/* Top Header & Navigation Banner */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/60 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -511,7 +512,7 @@ export const EliteAnalyticsHub: React.FC<EliteAnalyticsHubProps> = ({
           )}
         </>
       )}
-    </div>
+    </div></LocalizedTree>
   );
 };
 

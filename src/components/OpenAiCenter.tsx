@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import { aiResponseError } from '../shared/aiErrors';
 import React, { useState } from 'react';
 import { 
@@ -240,7 +241,7 @@ interface ActionInsightItem {
   };
 
   return (
-    <div className="space-y-3 sm:space-y-6 animate-in fade-in duration-200">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-3 sm:space-y-6 animate-in fade-in duration-200">
       {/* 1. HERO: EXECUTIVE 3-LINE POST-MATCH SUMMARY */}
       <div className="p-4 sm:p-6 bg-gradient-to-r from-slate-900 via-slate-900 to-purple-950/40 border border-slate-800 rounded-2xl sm:rounded-3xl shadow-xl space-y-3 sm:space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -517,6 +518,6 @@ interface ActionInsightItem {
           ))}
         </div>
       </div>
-    </div>
+    </div></LocalizedTree>
   );
 };

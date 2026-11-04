@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import React, { useEffect, useState } from 'react';
 import { Film, Inbox, MessageSquare, RefreshCw, Volleyball } from 'lucide-react';
 import { SmartSportsMontage, VolleySkill } from '../types';
@@ -33,7 +34,7 @@ export const PlayerVideoInbox: React.FC = () => {
   useEffect(() => { void load(); }, []);
 
   return (
-    <div className="space-y-3 sm:space-y-5">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-3 sm:space-y-5">
       <div className="bg-slate-900 border border-red-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -101,6 +102,6 @@ export const PlayerVideoInbox: React.FC = () => {
           ))}
         </div>
       )}
-    </div>
+    </div></LocalizedTree>
   );
 };

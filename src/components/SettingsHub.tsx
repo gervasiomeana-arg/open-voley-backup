@@ -1,3 +1,4 @@
+import { getStoredLocale, LocalizedTree } from '../shared/locale';
 import {exportCurrentData} from '../services/legacyRecovery';
 import { DEFAULT_SCOUT_BUTTONS, readScoutButtons, saveScoutButtons, validateScoutButtons, ScoutButtonPreferences } from '../utils/scoutButtonPreferences';
 import React, { useState } from 'react';
@@ -99,7 +100,7 @@ export const SettingsHub: React.FC<SettingsHubProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <LocalizedTree locale={getStoredLocale()}><div className="space-y-6 animate-in fade-in duration-200">
       
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl">
@@ -430,6 +431,6 @@ export const SettingsHub: React.FC<SettingsHubProps> = ({
         </div>
       )}
 
-    </div>
+    </div></LocalizedTree>
   );
 };
