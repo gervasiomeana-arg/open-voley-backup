@@ -9,6 +9,34 @@ interface WelcomeLandingPageProps {
     onOpenPlansModal: () => void;
 }
 const ptBR: Record<string, string> = {
+  "Planes": "Planos",
+  "Partido": "Jogo",
+  "Análisis": "Análise",
+  "Vídeo": "Vídeo",
+  "Scout": "Scout",
+  "Vista ilustrativa": "Exemplo ilustrativo",
+  "Rival": "Adversário",
+  "Local": "Mandante",
+  "Ataque": "Ataque",
+  "Punto": "Ponto",
+  "Recepción": "Recepção",
+  "Saque": "Saque",
+  "Rendimiento por fundamento": "Desempenho por fundamento",
+  "Los datos detrás": "Os dados por trás",
+  "del marcador.": "do placar.",
+  "Valores de ejemplo para mostrar la lectura de una planilla.": "Valores ilustrativos de uma planilha.",
+  "De la acción al vídeo": "Da ação ao vídeo",
+  "Selección de jugadas": "Seleção de jogadas",
+  "Saques · #9": "Saques · #9",
+  "Ilustración del montaje. El vídeo se carga dentro de la app.": "Exemplo ilustrativo. O vídeo é carregado no aplicativo.",
+  "Próximo entrenamiento": "Próximo treino",
+  "Una práctica": "Um treino",
+  "con un propósito.": "com um objetivo.",
+  "Elegir el problema del partido": "Identificar o problema do jogo",
+  "Preparar ejercicios": "Preparar exercícios",
+  "Guardar y seguir la evolución": "Salvar e acompanhar a evolução",
+  "Ilustración del recorrido de entrenamiento.": "Exemplo do planejamento de treino.",
+  "Datos de ejemplo · No es un partido en vivo": "Dados ilustrativos · Não é um jogo ao vivo",
   "Ir al contenido": "Pular para o conteúdo",
   "La plataforma": "A plataforma",
   "Cómo funciona": "Como funciona",
@@ -90,17 +118,19 @@ const questions = [
     ['¿Necesito saber los códigos de scout?', 'Podés registrar con botones en el modo simple o usar la consola de códigos cuando necesitás más detalle.'],
     ['¿Cómo consulto el precio?', 'En Planes y precios podés ver los precios mensuales actuales en pesos y dólares. Si querés conocer el producto primero, completá la solicitud de demo.'],
 ];
-function ProductIllustration({ step }: {
+function ProductIllustration({ step, locale }: {
     step: number;
+    locale: 'es' | 'pt-BR';
 }) {
+    const t = (text: string) => translate(text, locale);
     const top = [1, 6, 5, 2, 3, 4], bottom = [4, 3, 2, 5, 6, 1];
     return <div className="ov-product" aria-label="Ilustración del flujo de OPEN VOLEY con datos de ejemplo">
-   <div className="ov-product-top"><span><span className="ov-live-dot"/> OPEN VOLEY</span><span>Vista ilustrativa</span></div>
-   {step === 0 ? <><div className="ov-example-score"><span>Local</span><strong>12 <span>-</span> 10</strong><span>Rival</span></div><div className="ov-libero-band">L 4 · Local</div><div className="ov-court"><div className="ov-court-side ov-court-home">{top.map((p, i) => <div key={p}><small>P{p}{i === 0 ? ' · A' : ''}</small><b>{[1, 16, 14, 7, 9, 11][i]}</b></div>)}</div><div className="ov-net"><span>RED</span></div><div className="ov-court-side ov-court-away">{bottom.map((p, i) => <div key={p}><small>P{p}{i === 2 ? ' · A' : ''}</small><b>{[8, 12, 1, 3, 5, 10][i]}</b></div>)}</div></div><div className="ov-libero-band">L 2 · Rival</div><div className="ov-example-action"><span>Local · #9</span><b>Ataque <ArrowRight size={14}/> Punto</b></div></> :
-            step === 1 ? <div className="ov-analysis-example"><span className="ov-eyebrow">Rendimiento por fundamento</span><h3>Los datos detrás<br />del marcador.</h3>{[['Ataque', 72], ['Recepción', 58], ['Saque', 43]].map(([name, value]) => <div className="ov-bar" key={name}><span>{name}</span><div><i style={{ width: `${value}%` }}/></div><b>{value}%</b></div>)}<p>Valores de ejemplo para mostrar la lectura de una planilla.</p></div> :
-                step === 2 ? <div className="ov-video-example"><div className="ov-video-frame"><Video size={40}/><span>De la acción al vídeo</span><div className="ov-video-lines"/></div><div className="ov-example-action"><span>Selección de jugadas</span><b>Saques · #9</b></div><div className="ov-timeline">{[1, 2, 3, 4, 5, 6].map(n => <span key={n}/>)}</div><p>Ilustración del montaje. El vídeo se carga dentro de la app.</p></div> :
-                    <div className="ov-training-example"><span className="ov-eyebrow">Próximo entrenamiento</span><h3>Una práctica<br />con un propósito.</h3>{['Elegir el problema del partido', 'Preparar ejercicios', 'Guardar y seguir la evolución'].map((text, i) => <div key={text}><span>0{i + 1}</span><p>{text}</p><Check size={17}/></div>)}<p className="ov-example-note">Ilustración del recorrido de entrenamiento.</p></div>}
-   <div className="ov-product-bottom"><span>{t(steps[step].label)}</span><span>Datos de ejemplo · No es un partido en vivo</span></div>
+   <div className="ov-product-top"><span><span className="ov-live-dot"/> OPEN VOLEY</span><span>{t("Vista ilustrativa")}</span></div>
+   {step === 0 ? <><div className="ov-example-score"><span>{t("Local")}</span><strong>12 <span>-</span> 10</strong><span>{t("Rival")}</span></div><div className="ov-libero-band">L 4 · Local</div><div className="ov-court"><div className="ov-court-side ov-court-home">{top.map((p, i) => <div key={p}><small>P{p}{i === 0 ? ' · A' : ''}</small><b>{[1, 16, 14, 7, 9, 11][i]}</b></div>)}</div><div className="ov-net"><span>RED</span></div><div className="ov-court-side ov-court-away">{bottom.map((p, i) => <div key={p}><small>P{p}{i === 2 ? ' · A' : ''}</small><b>{[8, 12, 1, 3, 5, 10][i]}</b></div>)}</div></div><div className="ov-libero-band">L 2 · Rival</div><div className="ov-example-action"><span>Local · #9</span><b>Ataque <ArrowRight size={14}/> Punto</b></div></> :
+            step === 1 ? <div className="ov-analysis-example"><span className="ov-eyebrow">{t("Rendimiento por fundamento")}</span><h3>{t("Los datos detrás")}<br />{t("del marcador.")}</h3>{[['Ataque', 72], ['Recepción', 58], ['Saque', 43]].map(([name, value]) => <div className="ov-bar" key={name}><span>{name}</span><div><i style={{ width: `${value}%` }}/></div><b>{value}%</b></div>)}<p>{t("Valores de ejemplo para mostrar la lectura de una planilla.")}</p></div> :
+                step === 2 ? <div className="ov-video-example"><div className="ov-video-frame"><Video size={40}/><span>{t("De la acción al vídeo")}</span><div className="ov-video-lines"/></div><div className="ov-example-action"><span>{t("Selección de jugadas")}</span><b>{t("Saques · #9")}</b></div><div className="ov-timeline">{[1, 2, 3, 4, 5, 6].map(n => <span key={n}/>)}</div><p>{t("Ilustración del montaje. El vídeo se carga dentro de la app.")}</p></div> :
+                    <div className="ov-training-example"><span className="ov-eyebrow">{t("Próximo entrenamiento")}</span><h3>{t("Una práctica")}<br />{t("con un propósito.")}</h3>{['Elegir el problema del partido', 'Preparar ejercicios', 'Guardar y seguir la evolución'].map((text, i) => <div key={text}><span>0{i + 1}</span><p>{t(text)}</p><Check size={17}/></div>)}<p className="ov-example-note">{t("Ilustración del recorrido de entrenamiento.")}</p></div>}
+   <div className="ov-product-bottom"><span>{t(steps[step].label)}</span><span>{t("Datos de ejemplo · No es un partido en vivo")}</span></div>
  </div>;
 }
 export const WelcomeLandingPage: React.FC<WelcomeLandingPageProps> = ({ onStartFreeTrial, onClientLogin, onOpenPlansModal }) => {
@@ -130,16 +160,16 @@ export const WelcomeLandingPage: React.FC<WelcomeLandingPageProps> = ({ onStartF
     useEffect(() => { void fetch('/api/visitors/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ domain: window.location.hostname, page: window.location.pathname, deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Móvil' : 'PC / Laptop', action: 'Visita Landing Oficial' }) }).catch(() => { }); }, []);
     return <div ref={landingRef} className="ov-landing">
   <a href="#contenido" className="ov-skip">{t("Ir al contenido")}</a>
-  <header className="ov-header"><div className="ov-container ov-nav"><a className="ov-brand" href="#inicio" aria-label="OPEN VOLEY, inicio"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><nav aria-label="Navegación principal"><a href="#herramientas">{t("La plataforma")}</a><a href="#como-funciona">{t("Cómo funciona")}</a><button onClick={onOpenPlansModal}>{t("Planes y precios")}</button></nav><div className="ov-nav-actions"><select aria-label="Idioma / Idioma" value={locale} onChange={e => setLocale(e.target.value as 'es' | 'pt-BR')} style={{maxWidth:110, borderRadius:8, padding:6, background:"transparent", color:"inherit"}}><option value="es">Español</option><option value="pt-BR">Português BR</option></select><button className="ov-mobile-plans" onClick={onOpenPlansModal}>Planes</button><button className="ov-login" onClick={onClientLogin}>{t("Ingresar")} <ArrowUpRight size={16}/></button><button className="ov-nav-trial" onClick={onStartFreeTrial}>{t("Probar gratis")}</button></div></div></header>
+  <header className="ov-header"><div className="ov-container ov-nav"><a className="ov-brand" href="#inicio" aria-label="OPEN VOLEY, inicio"><Volleyball aria-hidden="true"/><span>OPEN<span>VOLEY</span></span></a><nav aria-label="Navegación principal"><a href="#herramientas">{t("La plataforma")}</a><a href="#como-funciona">{t("Cómo funciona")}</a><button onClick={onOpenPlansModal}>{t("Planes y precios")}</button></nav><div className="ov-nav-actions"><select aria-label="Idioma / Idioma" value={locale} onChange={e => setLocale(e.target.value as 'es' | 'pt-BR')} style={{maxWidth:110, borderRadius:8, padding:6, background:"transparent", color:"inherit"}}><option value="es">Español</option><option value="pt-BR">Português BR</option></select><button className="ov-mobile-plans" onClick={onOpenPlansModal}>{t('Planes')}</button><button className="ov-login" onClick={onClientLogin}>{t("Ingresar")} <ArrowUpRight size={16}/></button><button className="ov-nav-trial" onClick={onStartFreeTrial}>{t("Probar gratis")}</button></div></div></header>
   <main id="contenido">
    <div className="ov-hero-wrap"><img className="ov-hero-backdrop" src="/media/volley-hero.webp" width="1600" height="900" alt="" aria-hidden="true" fetchPriority="high"/><section id="inicio" className="ov-hero ov-container"><div className="ov-hero-copy"><h1>{t("Leé el partido.")}<br /><span>{t("Decidí mejor.")}</span></h1><p className="ov-hero-description">{t("Scouting, análisis y entrenamiento de vóley, conectados.")}</p><div className="ov-hero-actions"><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>{t("Probar OPEN VOLEY")} <ArrowUpRight size={19}/></button><a className="ov-text-link" href="#como-funciona">{t("Ver cómo funciona")} <ArrowRight size={17}/></a></div><p className="ov-trial-note">{t("7 días gratis · Sin tarjeta")}</p></div><div className="ov-hero-visual"><div className="ov-laptop"><LandingScoutIllustration /></div></div></section></div>
-   <div className="ov-platform-strip"><div className="ov-container"><span>{t("Tu trabajo técnico,")}<br /><strong>{t("conectado.")}</strong></span><p>Partido <ArrowRight /> Scout <ArrowRight /> Análisis <ArrowRight /> Vídeo <ArrowRight /> {t("Entrenamiento")}</p></div></div>
+   <div className="ov-platform-strip"><div className="ov-container"><span>{t("Tu trabajo técnico,")}<br /><strong>{t("conectado.")}</strong></span><p>{t('Partido')} <ArrowRight /> Scout <ArrowRight /> {t('Análisis')} <ArrowRight /> {t('Vídeo')} <ArrowRight /> {t('Entrenamiento')}</p></div></div>
    <section id="herramientas" className="ov-section ov-container"><div className="ov-section-heading"><div><h2>{t("No termina")}<br />{t("cuando termina el set.")}</h2></div><p>{t("La información que registrás durante el partido se convierte en material para analizar, explicar y entrenar.")}</p></div><div className="ov-tool-layout"><div className="ov-tool-list" role="tablist" aria-label="Herramientas de la plataforma">{steps.map((item, i) => { const Icon = item.icon; return <button id={`ov-tab-${i}`} key={item.label} role="tab" aria-selected={step === i} aria-controls="ov-tool-panel" tabIndex={step === i ? 0 : -1} onKeyDown={e => { if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(e.key)) {
         e.preventDefault();
         const next = e.key === 'Home' ? 0 : e.key === 'End' ? 3 : (step + (['ArrowUp', 'ArrowLeft'].includes(e.key) ? 3 : 1)) % 4;
         setStep(next);
         document.getElementById(`ov-tab-${next}`)?.focus();
-    } }} onClick={() => setStep(i)} className={step === i ? 'is-active' : ''}><span className="ov-tool-number">0{i + 1}</span><div><span className="ov-tool-label"><Icon size={18}/>{t(item.label)}</span><h3>{t(item.title)}</h3><p>{t(item.text)}</p></div><ArrowUpRight size={21}/></button>; })}</div><div id="ov-tool-panel" role="tabpanel" aria-labelledby={`ov-tab-${step}`} tabIndex={0} className="ov-tool-preview"><ProductIllustration step={step}/></div></div></section>
+    } }} onClick={() => setStep(i)} className={step === i ? 'is-active' : ''}><span className="ov-tool-number">0{i + 1}</span><div><span className="ov-tool-label"><Icon size={18}/>{t(item.label)}</span><h3>{t(item.title)}</h3><p>{t(item.text)}</p></div><ArrowUpRight size={21}/></button>; })}</div><div id="ov-tool-panel" role="tabpanel" aria-labelledby={`ov-tab-${step}`} tabIndex={0} className="ov-tool-preview"><ProductIllustration step={step} locale={locale}/></div></div></section>
    <section id="como-funciona" className="ov-method"><div className="ov-container ov-section"><div className="ov-section-heading"><div><p className="ov-eyebrow">{t("De la cancha a la práctica")}</p><h2>{t("Menos datos sueltos.")}<br />{t("Más decisiones.")}</h2></div><p>{t("Empezá por un partido y construí el seguimiento de tu equipo, a tu ritmo.")}</p></div><ol className="ov-method-steps"><li><span>01</span><h3>{t("Armá el partido")}</h3><p>{t("Elegí los equipos, cargá las jugadoras o jugadores y definí la formación inicial.")}</p></li><li><span>02</span><h3>{t("Registrá y revisá")}</h3><p>{t("Usá el scout simple o la consola. Consultá la planilla y volvé a las acciones del partido.")}</p></li><li><span>03</span><h3>{t("Llevalo al entrenamiento")}</h3><p>{t("Reuní evidencia en vídeo, organizá ejercicios y seguí el historial de trabajo.")}</p></li></ol><div className="ov-ai-note"><span>OPEN AI</span><p>{t("Consultá sobre los datos de tu equipo para orientar el análisis. Las conclusiones y decisiones quedan en manos del entrenador.")}</p><ArrowUpRight size={22}/></div></div></section>
    <section className="ov-section ov-container ov-access"><div><h2>{t("En el banco.")}<br />{t("En la oficina.")}<br /><span>{t("Con tu equipo.")}</span></h2><p>{t("Usá OPEN VOLEY desde el navegador, en computadora, tablet o celular.")}</p><button className="ov-text-link" onClick={onOpenPlansModal}>{t("Consultar planes y precios")} <ArrowUpRight size={19}/></button></div><div className="ov-access-right"><h3>{t("Primero conocé la plataforma.")}<br />{t("Después elegí cómo seguir.")}</h3><p>{t("Probá el recorrido con tu cuenta de Google o solicitá una demo para consultar cómo usarlo con tu club.")}</p><button className="ov-button ov-button-primary" onClick={onStartFreeTrial}>{t("Probar OPEN VOLEY")} <ArrowUpRight size={19}/></button><span>{t("7 días para explorar · Sin tarjeta para comenzar")}</span></div></section>
    {locale === 'pt-BR' && <section className="ov-section ov-container" aria-label="Preços para o Brasil"><div className="ov-section-heading"><div><p className="ov-eyebrow">Brasil</p><h2>Planos para equipes brasileiras</h2></div><p>Todos os preços para clientes do Brasil são cobrados em dólares americanos (USD), não em reais (BRL). Valores em USD por mês. A contratação e o pagamento dependem da disponibilidade do meio de pagamento internacional.</p></div><div className="ov-tool-list" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(210px,1fr))',gap:12}}>{[['plan-dt','Treinador'],['plan-club-pro','Clube Pro'],['plan-federacion','Federação / Torneio']].map(([id,name])=><div key={id} style={{padding:18,border:'1px solid currentColor',borderRadius:12}}><h3>{name}</h3><p>{brazilPrices?.[id] != null ? `US$ ${Number(brazilPrices[id]).toFixed(2)} / mês` : 'Preço sob consulta'}</p></div>)}</div><p style={{marginTop:16}}>Moeda de cobrança: <strong>dólar americano (USD)</strong>. Não realizamos conversão automática para reais.</p></section>}
