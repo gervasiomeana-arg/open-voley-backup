@@ -1,5 +1,6 @@
 import React, { Component, Suspense, lazy, useEffect, useState } from 'react';
 import { WelcomeLandingPage } from './components/WelcomeLandingPage';
+import { AppLocale, getStoredLocale } from './shared/locale';
 
 // Keep scouting, video and AI out of a visitor's initial download.
 const App = lazy(() => import('./App'));
@@ -23,6 +24,21 @@ export function PublicEntry() {
   const [enterApp, setEnterApp] = useState(false);
   const [auth, setAuth] = useState<'new' | 'existing' | null>(null);
   const [plans, setPlans] = useState(false);
+  const [locale, setLocale] = useState<AppLocale>(() => {
+    const query = new URLSearchParams(window.location.search).get('lang');
+    return query === 'pt' || query === 'pt-BR' ? 'pt-BR' : getStoredLocale();
+  });
+
+  const changeLocale = (nextLocale: AppLocale) => {
+    window.localStorage.setItem('openvoley_public_locale', nextLocale);
+    document.documentElement.lang = nextLocale;
+    setLocale(nextLocale);
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    window.localStorage.setItem('openvoley_public_locale', locale);
+  }, [locale]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -49,10 +65,10 @@ export function PublicEntry() {
   if (enterApp) return <LoadBoundary><Suspense fallback={loading}><App /></Suspense></LoadBoundary>;
 
   return <>
-    <WelcomeLandingPage onStartFreeTrial={() => setAuth('new')} onClientLogin={() => setAuth('existing')} onOpenPlansModal={() => setPlans(true)} />
+    <WelcomeLandingPage locale={locale} onLocaleChange={changeLocale} onStartFreeTrial={() => setAuth('new')} onClientLogin={() => setAuth('existing')} onOpenPlansModal={() => setPlans(true)} />
     {(auth || plans) && <LoadBoundary><Suspense fallback={loading}>
-      {auth && <GoogleAuthModal onLoginSuccess={() => setEnterApp(true)} onClose={() => setAuth(null)} isExistingClientLogin={auth === 'existing'} />}
-      {plans && <SubscriptionPlansModal isOpen onClose={() => setPlans(false)} />}
+      {auth && <GoogleAuthModal onLoginSuccess={() => setEnterApp(true)} onClose={() => setAuth(null)} isExistingClientLogin={auth === 'existing'} locale={locale} />}
+      {plans && <SubscriptionPlansModal isOpen onClose={() => setPlans(false)} locale={locale} />}
     </Suspense></LoadBoundary>}
   </>;
 }

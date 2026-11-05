@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Pause, Play, Volleyball } from 'lucide-react';
+import { AppLocale } from '../shared/locale';
 
 /** A public demonstration only. Never reads or writes a user's match. */
-export function LandingScoutIllustration() {
+export function LandingScoutIllustration({ locale = 'es' }: { locale?: AppLocale }) {
   const [phase, setPhase] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [reduced, setReduced] = useState(true);
@@ -21,15 +22,18 @@ export function LandingScoutIllustration() {
     const timer = window.setInterval(() => setPhase(p => (p + 1) % 4), 2600);
     return () => window.clearInterval(timer);
   }, [playing, reduced, visible]);
-  const labels = ['Saque · Visitante #10', 'Recepción · Local #16', 'Ataque · Local #9', 'Punto · Local #9'];
+  const pt = locale === 'pt-BR';
+  const labels = pt
+    ? ['Saque · Visitante #10', 'Recepção · Mandante #16', 'Ataque · Mandante #9', 'Ponto · Mandante #9']
+    : ['Saque · Visitante #10', 'Recepción · Local #16', 'Ataque · Local #9', 'Punto · Local #9'];
   const home = [1, 16, 14, 7, 9, 11], away = [8, 12, 1, 3, 5, 10];
   const positionsHome = [1, 6, 5, 2, 3, 4], positionsAway = [4, 3, 2, 5, 6, 1];
   const ball = [[282, 291], [174, 91], [174, 148], [226, 293]][phase];
-  return <div ref={ref} className={`ov-scout-demo ov-phase-${phase}`} aria-label="Demostración ilustrada de scouting con datos de ejemplo">
-    <div className="ov-scout-top"><strong>Scout simple</strong><span>LOCAL <b>{phase === 3 ? 13 : 12}</b><i>-</i><b>16</b> VISITANTE</span><small>Set 1</small></div>
+  return <div ref={ref} className={`ov-scout-demo ov-phase-${phase}`} aria-label={pt ? 'Demonstração ilustrada de scout com dados de exemplo' : 'Demostración ilustrada de scouting con datos de ejemplo'}>
+    <div className="ov-scout-top"><strong>{pt ? 'Scout simples' : 'Scout simple'}</strong><span>{pt ? 'MANDANTE' : 'LOCAL'} <b>{phase === 3 ? 13 : 12}</b><i>-</i><b>16</b> VISITANTE</span><small>Set 1</small></div>
     <div className="ov-scout-layout">
-      <div className="ov-scout-skills" aria-hidden="true">{['Ataque', 'Recepción', 'Saque', 'Bloqueo', 'Defensa'].map((name, i) => <span key={name} className={i === (phase === 0 ? 2 : phase === 1 ? 1 : 0) ? 'is-selected' : ''}>{name}</span>)}</div>
-      <svg className="ov-scout-court" viewBox="0 0 350 385" role="img" aria-label="Dos equipos enfrentados, armadores en amarillo y líberos fuera de la cancha">
+      <div className="ov-scout-skills" aria-hidden="true">{(pt ? ['Ataque', 'Recepção', 'Saque', 'Bloqueio', 'Defesa'] : ['Ataque', 'Recepción', 'Saque', 'Bloqueo', 'Defensa']).map((name, i) => <span key={name} className={i === (phase === 0 ? 2 : phase === 1 ? 1 : 0) ? 'is-selected' : ''}>{name}</span>)}</div>
+      <svg className="ov-scout-court" viewBox="0 0 350 385" role="img" aria-label={pt ? 'Duas equipes frente a frente, levantadores em amarelo e líberos fora da quadra' : 'Dos equipos enfrentados, armadores en amarillo y líberos fuera de la cancha'}>
         <rect x="35" y="51" width="280" height="280" fill="#111e2b" stroke="#8493a0" strokeWidth="1.5" />
         <path d="M35 145H315 M35 237H315" stroke="#61707d" strokeDasharray="4 4" />
         <path d="M26 191H324" stroke="#f6f0e5" strokeWidth="3" />
@@ -47,9 +51,9 @@ export function LandingScoutIllustration() {
         {[{ x: 286, y: 22, n: 4 }, { x: 64, y: 364, n: 2 }].map(p => <g key={p.n}><rect x={p.x - 25} y={p.y - 15} width="50" height="30" rx="4" fill="#39265b" stroke="#9c7acf"/><text x={p.x} y={p.y + 5} className="ov-demo-libero">L {p.n}</text></g>)}
         <g className="ov-demo-ball" style={{ transform: `translate(${ball[0]}px, ${ball[1]}px)` }}><circle r="8" fill="#f6f0e5" stroke="#080e1a"/><path d="M-7 0H7 M0-7V7" stroke="#667585" strokeWidth="1"/></g>
       </svg>
-      <div className="ov-scout-results" aria-hidden="true"><small>Resultado</small><span className={phase === 3 ? 'is-selected' : ''}><b>#</b> Punto</span><span><b>+</b> Continuidad</span><span><b>=</b> Error</span></div>
+      <div className="ov-scout-results" aria-hidden="true"><small>Resultado</small><span className={phase === 3 ? 'is-selected' : ''}><b>#</b> {pt ? 'Ponto' : 'Punto'}</span><span><b>+</b> {pt ? 'Continuidade' : 'Continuidad'}</span><span><b>=</b> {pt ? 'Erro' : 'Error'}</span></div>
     </div>
-    <div className="ov-scout-caption"><span><Volleyball size={14}/>{labels[phase]}</span><button type="button" onClick={() => setPlaying(p => !p)} disabled={reduced} aria-label={playing ? 'Pausar demostración' : 'Reproducir demostración'}>{playing ? <Pause size={13}/> : <Play size={13}/>}<span>{reduced ? 'Vista estática' : playing ? 'Pausar' : 'Reproducir'}</span></button></div>
-    <p className="ov-scout-disclaimer">Vista ilustrativa con datos de ejemplo <ArrowRight size={12}/> A: armador · L: líbero</p>
+    <div className="ov-scout-caption"><span><Volleyball size={14}/>{labels[phase]}</span><button type="button" onClick={() => setPlaying(p => !p)} disabled={reduced} aria-label={playing ? (pt ? 'Pausar demonstração' : 'Pausar demostración') : (pt ? 'Reproduzir demonstração' : 'Reproducir demostración')}>{playing ? <Pause size={13}/> : <Play size={13}/>}<span>{reduced ? 'Vista estática' : playing ? 'Pausar' : 'Reproducir'}</span></button></div>
+    <p className="ov-scout-disclaimer">{pt ? 'Exemplo ilustrativo com dados de demonstração' : 'Vista ilustrativa con datos de ejemplo'} <ArrowRight size={12}/> {pt ? 'A: levantador · L: líbero' : 'A: armador · L: líbero'}</p>
   </div>;
 }
