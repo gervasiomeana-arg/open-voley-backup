@@ -1,7 +1,7 @@
 import { saveScoutPreset } from './utils/scoutCourtLayout';
 import {UserDataStoragePanel} from './components/UserDataStoragePanel';
 import { userStorage } from './services/userStorage';
-import { AppLocale, getStoredLocale, translateUi } from './shared/locale';
+import { AppLocale, getStoredLocale, translateUi, LocalizedTree } from './shared/locale';
 import { TacticalWhiteboard } from './components/TacticalWhiteboard';
 import React, { useState, useEffect } from 'react';
 import { applyRallyWinner, pointWinnerFromAction, rotateClockwise } from './utils/matchRotationEngine';
@@ -1033,6 +1033,7 @@ export default function App() {
   const awaySetsWon = match.sets ? match.sets.filter((s) => s.winner === 'away').length : 0;
 
   return (
+    <LocalizedTree locale={locale}>
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950 flex flex-col">
       {/* Left Collapsible Sidebar */}
       <Sidebar
@@ -1945,5 +1946,6 @@ export default function App() {
         />
       )}
     </div>
+    </LocalizedTree>
   );
 }
