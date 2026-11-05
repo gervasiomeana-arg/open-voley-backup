@@ -25,7 +25,7 @@ assert.equal(
   await generateAiText("Contexto real", false, env, client),
   "Análisis de los datos registrados.",
 );
-assert.equal(params.model, "gemini-3.8-flash");
+assert.equal(params.model, "gemini-3.5-flash");
 assert.equal(params.contents, "Contexto real");
 assert.ok(options.httpOptions.timeout <= 45000 && options.httpOptions.timeout > 44000);
 assert.equal(options.httpOptions.retryOptions.attempts, 1);
@@ -78,8 +78,47 @@ console.log(
 let fakeNow=0, attempts=0, waits:number[]=[], timeouts:number[]=[];
 const timing={now:()=>fakeNow,delay:async(ms:number)=>{waits.push(ms);fakeNow+=ms;}};
 const overloaded=Object.assign(new Error('private provider details'),{status:503});
-assert.equal(await generateAiText('same context',false,env,(o:any)=>{timeouts.push(o.httpOptions.timeout);return {models:{async generateContent(p:any){attempts++;assert.equal(p.model,'gemini-3.8-flash');assert.equal(p.contents,'same context');if(attempts===1){fakeNow+=20000;throw overloaded;}return {text:'Recovered'};}}};},timing),'Recovered');
+assert.equal(await generateAiText('same context',false,env,(o:any)=>{timeouts.push(o.httpOptions.timeout);return {models:{async generateContent(p:any){attempts++;assert.equal(p.model,attempts===1?'gemini-3.5-flash':'gemini-3.6-flash');assert.equal(p.contents,'same context');if(attempts===1){fakeNow+=20000;throw overloaded;}return {text:'Recovered'};}}};},timing),'Recovered');
 assert.equal(attempts,2);assert.deepEqual(waits,[1000]);assert.deepEqual(timeouts,[45000,24000]);
+
+// gemini-3.8-flash is automatically remapped to gemini-3.5-flash to protect from 503 saturation
+attempts = 0;
+assert.equal(
+  await generateAiText('safe remap', false, { ...env, GEMINI_MODEL: 'gemini-3.8-flash' }, () => ({
+    models: {
+      async generateContent(p: any) {
+        attempts++;
+        assert.equal(p.model, 'gemini-3.5-flash');
+        return { text: 'Safe' };
+      }
+    }
+  })),
+  'Safe'
+);
+assert.equal(attempts, 1);
+
+// When a custom model encounters 503/504, retry recovers via fallback model
+attempts = 0; fakeNow = 0; waits = []; timeouts = [];
+const modelsCalled: string[] = [];
+assert.equal(
+  await generateAiText('same context', false, { ...env, GEMINI_MODEL: 'gemini-custom' }, (o: any) => {
+    timeouts.push(o.httpOptions.timeout);
+    return {
+      models: {
+        async generateContent(p: any) {
+          attempts++;
+          modelsCalled.push(p.model);
+          if (attempts === 1) { fakeNow += 20000; throw overloaded; }
+          return { text: 'Fallback Recovered' };
+        }
+      }
+    };
+  }, timing),
+  'Fallback Recovered'
+);
+assert.equal(attempts, 2);
+assert.deepEqual(modelsCalled, ['gemini-custom', 'gemini-3.6-flash']);
+
 // Continuous overload stops at two; auth, quota and malformed requests are never retried.
 for(const status of [503,401,403,400,404,429,500]){
  attempts=0;fakeNow=0;waits=[];
@@ -94,4 +133,4 @@ assert.equal(attempts,1);assert.equal(waits.length,0);
 attempts=0;fakeNow=0;
 await assert.rejects(()=>generateAiText('context',false,env,()=>({models:{async generateContent(){attempts++;throw overloaded;}}}),{now:()=>fakeNow,delay:async()=>{fakeNow=46000;}}),/AI_TIMEOUT/);
 assert.equal(attempts,1);
-console.log('503 recovery passed: one retry, same model/context, remaining-time budget, no retry storms or auth/quota retries.');
+console.log('503 recovery passed: one retry, fallback to gemini-3.5-flash, remaining-time budget, no retry storms or auth/quota retries.');

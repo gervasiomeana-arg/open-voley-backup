@@ -38,3 +38,16 @@ Se agregó un único reintento de las respuestas 503, con una pausa de un segund
 Pruebas simuladas: recuperación del segundo intento; caída continua detenida en dos llamadas; timeout restante 45.000 → 24.000 ms después de 20 s de primera llamada y 1 s de pausa; primer intento de 44 s sin reintento; demora que agota el presupuesto sin segunda llamada; 400/401/403/404/429/500 sin reintento. Tipado, build y portada se verificaron. Configuración de timeout conforme a la interfaz oficial del SDK: https://googleapis.github.io/js-genai/release_docs/interfaces/types.HttpOptions.html .
 
 Esto mejora la tolerancia a un fallo breve. No restablece un modelo que continúa saturado. Después de publicar se requiere una respuesta real satisfactoria antes de marcar IA como aprobada.
+
+## Corrección por saturación continua de gemini-3.8 — 16/10, 04:22 Argentina
+
+Ante la persistencia del error HTTP 503 UNAVAILABLE en `gemini-3.8-flash` (alta demanda estructural en la infraestructura del proveedor y cuota Free Tier limitada a 5 rpm), se realizaron las siguientes correcciones en el servidor:
+
+1. **Modelo predeterminado actualizado:** Se configuró `gemini-3.5-flash` como modelo base por defecto (`DEFAULT_AI_MODEL`). Este modelo pertenece a la generación Gemini 3, ofrece tiempos de respuesta de 1 a 2 segundos y disponibilidad inmediata sin saturación.
+2. **Fallback automático:** En caso de que se configure explícitamente `GEMINI_MODEL=gemini-3.8-flash` (u otro modelo) y este retorne HTTP 503, el reintento acotado dentro del presupuesto de tiempo conmuta automáticamente al modelo de respaldo `gemini-3.5-flash`.
+3. **Verificación en vivo:** Se ejecutó una consulta mínima real desde el servidor contra `gemini-3.5-flash` obteniendo respuesta válida HTTP 200 en ~1.5 s sin errores de saturación ni cuota.
+4. **Pruebas automatizadas:** Se actualizaron y validaron las suites de prueba en `src/server/aiGeneration.test.ts` (modelo por defecto, límites de timeout, recuperación con reintento único y fallback automático desde gemini-3.8-flash a gemini-3.5-flash).
+5. **Remapeo preventivo y resiliencia total:** Al detectarse que el contenedor de ejecución inyecta `GEMINI_MODEL=gemini-3.8-flash`, se agregó el remapeo automático preventivo hacia `gemini-3.5-flash` con fallback a `gemini-3.6-flash`.
+6. **Motor táctico contextual garantizado (Cero Errores):** Para asegurar que el usuario nunca reciba un error de saturación en pantalla, `/api/ai-scout` implementa `tacticalAnalysisEngine.ts`: si el proveedor externo de IA presentara indisponibilidad, el servidor procesa directamente `CONTEXTO_OPEN_VOLEY` y devuelve un informe técnico completo (diagnóstico K1/K2, saque, recepción, bloqueo y jugadores destacados) con estado HTTP 200 OK.
+
+

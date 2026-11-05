@@ -866,17 +866,16 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         rx="2"
                         fill="#083344"
                         stroke={isSelected ? '#38bdf8' : '#06b6d4'}
-                        strokeWidth={isSelected ? '0.9' : '0.6'}
+                        strokeWidth={isSelected ? '0.9' : '0.4'}
                       />
 
-                      {/* Number Badge */}
-                      <circle cx={coord.x - 4} cy={coord.y - 1.5} r="2.4" fill="#06b6d4" />
-                      <text x={coord.x - 4} y={coord.y - 0.7} fill="#082f49" fontSize="2.2" fontWeight="900" textAnchor="middle">
+                      {/* Number circle badge or text */}
+                      <circle cx={coord.x - 3.8} cy={coord.y - 1.5} r="2.8" fill="#0e7490" />
+                      <text x={coord.x - 3.8} y={coord.y - 0.7} fill="#ffffff" fontSize="2.2" fontWeight="bold" textAnchor="middle">
                         {pNum}
                       </text>
 
-                      {/* Position Tag */}
-                      <text x={coord.x + 2} y={coord.y - 3} fill="#7dd3fc" fontSize="1.8" fontWeight="bold" textAnchor="middle">
+                      <text x={coord.x + 2} y={coord.y - 3} fill="#fdba74" fontSize="1.8" fontWeight="bold" textAnchor="middle">
                         {player?.position || 'JUG'}
                       </text>
 
@@ -910,7 +909,6 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         if (player) setSelectedPlayerForProfile(player);
                       }}
                     >
-                      {/* Outer Card Glow on selection */}
                       {isSelected && (
                         <rect
                           x={coord.x - 7.5}
@@ -925,7 +923,6 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         />
                       )}
 
-                      {/* Player Box */}
                       <rect
                         x={coord.x - 7}
                         y={coord.y - 6}
@@ -933,28 +930,24 @@ export const UnifiedTacticalHub: React.FC<UnifiedTacticalHubProps> = ({
                         height="10.5"
                         rx="2"
                         fill="#431407"
-                        stroke={isSelected ? '#fb923c' : '#ea580c'}
-                        strokeWidth={isSelected ? '0.9' : '0.6'}
+                        stroke={isSelected ? '#fb923c' : '#f97316'}
+                        strokeWidth={isSelected ? '0.9' : '0.4'}
                       />
 
-                      {/* Number Badge */}
-                      <circle cx={coord.x - 4} cy={coord.y - 1.5} r="2.4" fill="#f97316" />
-                      <text x={coord.x - 4} y={coord.y - 0.7} fill="#431407" fontSize="2.2" fontWeight="900" textAnchor="middle">
+                      <circle cx={coord.x - 3.8} cy={coord.y - 1.5} r="2.8" fill="#ea580c" />
+                      <text x={coord.x - 3.8} y={coord.y - 0.7} fill="#ffffff" fontSize="2.2" fontWeight="bold" textAnchor="middle">
                         {pNum}
                       </text>
 
-                      {/* Position Tag */}
                       <text x={coord.x + 2} y={coord.y - 3} fill="#fdba74" fontSize="1.8" fontWeight="bold" textAnchor="middle">
                         {player?.position || 'JUG'}
                       </text>
 
-                      {/* Name preview */}
                       <text x={coord.x + 2} y={coord.y - 0.5} fill="#ffffff" fontSize="2.1" fontWeight="bold" textAnchor="middle">
                         {player?.name ? player.name.split(' ')[0].slice(0, 6) : `#${pNum}`}
                       </text>
 
-                      {/* Height / Reach micro label */}
-                      <text x={coord.x} y={coord.y + 3.2} fill="#94a3b8" fontSize="1.6" textAnchor="middle">
+                      <text x={coord.x} y={coord.y + 3.2} fill="#fdba74" fontSize="1.6" textAnchor="middle">
                         {player?.spikeReachCm ? `↑${player.spikeReachCm}cm` : `Z${zone}`}
                       </text>
                     </g>

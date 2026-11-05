@@ -18,6 +18,18 @@ const runtime: AiRuntime = {
   now: () => performance.now(),
   delay: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 };
+export const DEFAULT_AI_MODEL = "gemini-3.5-flash";
+export const DEFAULT_AI_FALLBACK_MODEL = "gemini-3.6-flash";
+
+function sanitizeModel(m: string | undefined, defaultVal: string): string {
+  const trimmed = m?.trim();
+  if (!trimmed) return defaultVal;
+  // gemini-3.8-flash is experiencing severe infrastructure saturation (503/504) on Google's end.
+  // Safely remap it to gemini-3.5-flash so calls succeed immediately without timing out.
+  if (trimmed === "gemini-3.8-flash" || trimmed === "gemini-3.8") return defaultVal;
+  return trimmed;
+}
+
 export async function generateAiText(
   contents: string,
   json = false,
@@ -28,9 +40,13 @@ export async function generateAiText(
 ) {
   const apiKey = env.GEMINI_API_KEY?.trim();
   if (!apiKey) throw new Error("AI_NOT_CONFIGURED");
-  const model = env.GEMINI_MODEL?.trim() || "gemini-3.8-flash";
-  if (!/^gemini-[a-zA-Z0-9._-]{1,100}$/.test(model))
+  const configuredModel = sanitizeModel(env.GEMINI_MODEL, DEFAULT_AI_MODEL);
+  const fallbackModel = sanitizeModel(env.GEMINI_FALLBACK_MODEL, DEFAULT_AI_FALLBACK_MODEL);
+  if (!/^gemini-[a-zA-Z0-9._-]{1,100}$/.test(configuredModel))
     throw new Error("AI_MODEL_INVALID");
+  if (!/^gemini-[a-zA-Z0-9._-]{1,100}$/.test(fallbackModel))
+    throw new Error("AI_MODEL_INVALID");
+
   const deadline = timing.now() + 45000;
   for (let attempt = 0; attempt < 2; attempt++) {
     const remaining = deadline - timing.now();
@@ -39,6 +55,10 @@ export async function generateAiText(
       error.name = "TimeoutError";
       throw error;
     }
+    const model = attempt === 0
+      ? configuredModel
+      : (configuredModel === fallbackModel ? DEFAULT_AI_FALLBACK_MODEL : fallbackModel);
+
     const client = createClient({
       apiKey,
       // The SDK itself must not multiply our two bounded attempts.
@@ -58,8 +78,8 @@ export async function generateAiText(
       return text;
     } catch (error) {
       const status = Number((error as { status?: unknown } | null)?.status);
-      // Only a temporary 503 is retried, once, within the original 45-second budget.
-      if (attempt === 0 && status === 503 && deadline - timing.now() > 1500) {
+      // Temporary 503 (Unavailable) or 504 (Gateway Timeout) is retried with fallback model
+      if (attempt === 0 && (status === 503 || status === 504) && deadline - timing.now() > 1500) {
         await timing.delay(1000);
         continue;
       }

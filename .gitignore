@@ -16,6 +16,8 @@ mp_credentials.json
 *.sqlite
 *.sqlite3
 *.db
+*.db-shm
+*.db-wal
 
 # Local source videos and generated montage files
 .openvoley-video-renders/
