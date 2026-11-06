@@ -22,6 +22,7 @@ const ptBR: Record<string, string> = {
   "Local": "Mandante",
   "Ataque": "Ataque",
   "Punto": "Ponto",
+  "Ilustración del flujo de OPEN VOLEY con datos de ejemplo": "Ilustração do fluxo do OPEN VOLEY com dados de exemplo",
   "Recepción": "Recepção",
   "Saque": "Saque",
   "Rendimiento por fundamento": "Desempenho por fundamento",
@@ -127,9 +128,9 @@ function ProductIllustration({ step, locale }: {
 }) {
     const t = (text: string) => translate(text, locale);
     const top = [1, 6, 5, 2, 3, 4], bottom = [4, 3, 2, 5, 6, 1];
-    return <div className="ov-product" aria-label="Ilustración del flujo de OPEN VOLEY con datos de ejemplo">
+    return <div className="ov-product" aria-label={t("Ilustración del flujo de OPEN VOLEY con datos de ejemplo")}>
    <div className="ov-product-top"><span><span className="ov-live-dot"/> OPEN VOLEY</span><span>{t("Vista ilustrativa")}</span></div>
-   {step === 0 ? <><div className="ov-example-score"><span>{t("Local")}</span><strong>12 <span>-</span> 10</strong><span>{t("Rival")}</span></div><div className="ov-libero-band">L 4 · Local</div><div className="ov-court"><div className="ov-court-side ov-court-home">{top.map((p, i) => <div key={p}><small>P{p}{i === 0 ? ' · A' : ''}</small><b>{[1, 16, 14, 7, 9, 11][i]}</b></div>)}</div><div className="ov-net"><span>RED</span></div><div className="ov-court-side ov-court-away">{bottom.map((p, i) => <div key={p}><small>P{p}{i === 2 ? ' · A' : ''}</small><b>{[8, 12, 1, 3, 5, 10][i]}</b></div>)}</div></div><div className="ov-libero-band">L 2 · Rival</div><div className="ov-example-action"><span>Local · #9</span><b>Ataque <ArrowRight size={14}/> Punto</b></div></> :
+   {step === 0 ? <><div className="ov-example-score"><span>{t("Local")}</span><strong>12 <span>-</span> 10</strong><span>{t("Rival")}</span></div><div className="ov-libero-band">L 4 · {t('Local')}</div><div className="ov-court"><div className="ov-court-side ov-court-home">{top.map((p, i) => <div key={p}><small>P{p}{i === 0 ? (locale === 'pt-BR' ? ' · L' : ' · A') : ''}</small><b>{[1, 16, 14, 7, 9, 11][i]}</b></div>)}</div><div className="ov-net"><span>{locale === 'pt-BR' ? 'REDE' : 'RED'}</span></div><div className="ov-court-side ov-court-away">{bottom.map((p, i) => <div key={p}><small>P{p}{i === 2 ? (locale === 'pt-BR' ? ' · L' : ' · A') : ''}</small><b>{[8, 12, 1, 3, 5, 10][i]}</b></div>)}</div></div><div className="ov-libero-band">L 2 · {t('Rival')}</div><div className="ov-example-action"><span>{t('Local')} · #9</span><b>{t('Ataque')} <ArrowRight size={14}/> {t('Punto')}</b></div></> :
             step === 1 ? <div className="ov-analysis-example"><span className="ov-eyebrow">{t("Rendimiento por fundamento")}</span><h3>{t("Los datos detrás")}<br />{t("del marcador.")}</h3>{[['Ataque', 72], ['Recepción', 58], ['Saque', 43]].map(([name, value]) => <div className="ov-bar" key={name}><span>{name}</span><div><i style={{ width: `${value}%` }}/></div><b>{value}%</b></div>)}<p>{t("Valores de ejemplo para mostrar la lectura de una planilla.")}</p></div> :
                 step === 2 ? <div className="ov-video-example"><div className="ov-video-frame"><Video size={40}/><span>{t("De la acción al vídeo")}</span><div className="ov-video-lines"/></div><div className="ov-example-action"><span>{t("Selección de jugadas")}</span><b>{t("Saques · #9")}</b></div><div className="ov-timeline">{[1, 2, 3, 4, 5, 6].map(n => <span key={n}/>)}</div><p>{t("Ilustración del montaje. El vídeo se carga dentro de la app.")}</p></div> :
                     <div className="ov-training-example"><span className="ov-eyebrow">{t("Próximo entrenamiento")}</span><h3>{t("Una práctica")}<br />{t("con un propósito.")}</h3>{['Elegir el problema del partido', 'Preparar ejercicios', 'Guardar y seguir la evolución'].map((text, i) => <div key={text}><span>0{i + 1}</span><p>{t(text)}</p><Check size={17}/></div>)}<p className="ov-example-note">{t("Ilustración del recorrido de entrenamiento.")}</p></div>}
