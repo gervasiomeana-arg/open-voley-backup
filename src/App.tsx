@@ -94,6 +94,10 @@ export default function App() {
   const changeLocale = (nextLocale: AppLocale) => {
     window.localStorage.setItem('openvoley_public_locale', nextLocale);
     document.documentElement.lang = nextLocale;
+    const url = new URL(window.location.href);
+    if (nextLocale === 'pt-BR') url.searchParams.set('lang', 'pt-BR');
+    else url.searchParams.delete('lang');
+    window.history.replaceState(window.history.state, '', url.toString());
     setLocale(nextLocale);
   };
   const [activeTab, setActiveTab] = useState<TabType>('home');
