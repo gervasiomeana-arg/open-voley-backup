@@ -1061,7 +1061,7 @@ export default function App() {
       />
 
       {/* Main Content Area Wrapper */}
-      <div className={`flex-1 flex flex-col min-h-screen min-w-0 overflow-x-hidden overflow-y-auto transition-[margin] duration-300 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-60'}`}>
+      <div className={`flex-1 flex flex-col min-h-screen min-w-0 w-full overflow-x-hidden overflow-y-auto transition-[padding] duration-300 ${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-60'}`}>
         <UserDataStoragePanel/>
         {/* Floating Toast Notification */}
         {floatingToast && (
